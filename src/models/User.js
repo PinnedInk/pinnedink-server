@@ -93,6 +93,15 @@ class UserClass {
     return getAllFromList(list)
   }
   
+  get archivedWorks() {
+    const list = this.archivedWorksIds;
+    return Work.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
+  
   static generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
   }
@@ -127,6 +136,7 @@ const UserSchema = new Schema({
   eventsIds: [ObjectId],
   tags: [String],
   teamId: ObjectId,
+  archivedWorksIds: [ObjectId]
 });
 
 UserSchema.loadClass(UserClass);

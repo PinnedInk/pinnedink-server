@@ -69,6 +69,7 @@ export default gql`
     likes: [Like]
     members: [ISender]
     tags: [String]
+    archivedWorks: [Work]
   }
 
   type Like implements IResponsable {
@@ -127,7 +128,7 @@ export default gql`
     followers: [ISender]
     messages: [Message]
     email: String
-    avatarUrl: String,
+    avatarUrl: String
     tags: [String]
   }
 
@@ -144,6 +145,7 @@ export default gql`
     view: Int
     target: IResponsable
     tags: [String]
+    archived: [User]
   }
 
   input SessionLocationInput {
@@ -198,6 +200,7 @@ export default gql`
     verifyEmailToken(token: String!, email: String!): Boolean
     verify(provider: String!, code: String!): User
     works(od: Int = 0, num:Int = 100, authorId: ID, inkname: String): [Work]
+    archivedWorks(od: Int = 0, num:Int = 100, inkname: String): [Work]
     work(id: ID!): Work
     worksByUserId(id: ID!): [Work]
     comments(ids: [String]): [Comment]
@@ -233,6 +236,7 @@ export default gql`
     addWork(url: String!, thumbUrl: String!, name: String!, description: String!, tags: [String]): User
     updateWork(id: ID, description: String, name: String, tags:[String]): Work
     removeWork(id: ID!): Work
+    archiveWork(id: ID): Work
     view(id: ID!): Work
     addJob(title: String!, description: String, company: String, email: String, location: String, url: String, name: String): Job
     addEvent(title: String!, description: String!, date: SessionDateInput!, authorId: String, place: SessionPlaceInput!): Event
