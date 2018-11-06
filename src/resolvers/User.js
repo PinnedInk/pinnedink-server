@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import jwt from 'jsonwebtoken';
 import request from 'request';
-import { User, Token, Team, Message, Like, Comment, Event, Job, Work, Tag } from '../models';
+import { User, Token, Team, Message, Like, Comment, Event, Job, Work } from '../models';
 import { google } from 'googleapis';
 import { FB } from 'fb';
 import { addingToIds, removeIds, createTag } from '../utils';
@@ -11,7 +11,7 @@ const sendVerificationMail = async(email) => {
   const tokenKey = jwt.sign({
     authId: email
   }, sessionSecret, { expiresIn: '1d' });
-
+  
   const token = await Token.findOneAndUpdate({ ownerId: email, provider: 'email-verification' }, {
     key: tokenKey,
     date: new Date()
@@ -30,7 +30,7 @@ const sendVerificationMail = async(email) => {
   ));
 };
 
-const updateUser = async ({ email, name, thumbUrl, avatarUrl }, provider) => {
+const updateUser = async({ email, name, thumbUrl, avatarUrl }, provider) => {
   const payload = _.pickBy({
     avatarUrl,
     thumbUrl,
@@ -41,12 +41,12 @@ const updateUser = async ({ email, name, thumbUrl, avatarUrl }, provider) => {
   }, payload, { upsert: true, new: true });
   const sessionSecret = process.env.SESSION_SECRET;
   const token = await Token.findByIdAndUpdate(user.tokenId, {
-      key: jwt.sign({
-        authId: user.id
-      }, sessionSecret, { expiresIn: '1d' }),
-      ownerId: email,
-      provider
-    }, { new: true, upsert: true });
+    key: jwt.sign({
+      authId: user.id
+    }, sessionSecret, { expiresIn: '1d' }),
+    ownerId: email,
+    provider
+  }, { new: true, upsert: true });
   user.tokenId = token.id;
   await user.save();
   return user;
@@ -116,7 +116,11 @@ export default {
   Query: {
     verifyEmailToken: async(_, { token: verifyToken, email }) => {
       //TODO: Add date validatuin
-      let token = await Token.findOne({ 'key': { $regex: verifyToken }, ownerId: email, provider: 'email-verification' });
+      let token = await Token.findOne({
+        'key': { $regex: verifyToken },
+        ownerId: email,
+        provider: 'email-verification'
+      });
       if (token && token.verify()) {
         await token.remove();
         const user = User.findOne({ email });
@@ -168,11 +172,11 @@ export default {
       return null;
     },
     filteredUsers: async(_, { value }) => {
-      return await User.find({"inkname": {$regex: '^'+ value, $options: 'i'}});
+      return await User.find({ 'inkname': { $regex: '^' + value, $options: 'i' } });
     },
   },
   Mutation: {
-    sendVerifyEmail: async (_, { email }) => {
+    sendVerifyEmail: async(_, { email }) => {
       try {
         await sendVerificationMail(email);
         return true;
@@ -180,7 +184,7 @@ export default {
         return false;
       }
     },
-    login: async (_, { email, password }) => {
+    login: async(_, { email, password }) => {
       const user = await User.findOne({ email });
       
       if (user && user.validPassword(password)) {
@@ -190,19 +194,18 @@ export default {
           return new Error('E-mail should be verified.');
         }
         const token = await Token.findByIdAndUpdate(user.tokenId, {
-            key: jwt.sign({
-              authId: user.id
-            }, sessionSecret, { expiresIn: '1d' }),
-            ownerId: email,
-            provider: "email"
-          }, { new: true, upsert: true });
+          key: jwt.sign({
+            authId: user.id
+          }, sessionSecret, { expiresIn: '1d' }),
+          ownerId: email,
+          provider: 'email'
+        }, { new: true, upsert: true });
         user.tokenId = token.id;
         await user.save();
         return user;
       }
       return new Error('Wrong email or password');
     },
-    
     validateUserName: async(_, { inkname }) => {
       let user;
       if (inkname) {
@@ -213,7 +216,6 @@ export default {
       }
       return user;
     },
-  
     follow: async(_, { inkname }, { user }) => {
       let target = null;
       let subscriber = user;
@@ -227,7 +229,7 @@ export default {
       let subscribeId = target.followersIds.indexOf(subscriber.id);
       if (targetId !== -1) {
         subscriber.followingIds.splice(targetId, 1);
-        target.followersIds.splice(subscribeId, 1)
+        target.followersIds.splice(subscribeId, 1);
       } else {
         subscriber.followingIds.push(target.id);
         target.followersIds.push(user.id);
@@ -236,7 +238,6 @@ export default {
       await target.save();
       return subscriber;
     },
-    
     logout: async(_, data, { token, user }) => {
       if (token) {
         await Token.findOneAndRemove({ key: token.key });
@@ -253,8 +254,7 @@ export default {
         return new Error('User missing');
       }
     },
-
-    createUser: async (err, { email, password }, { user, token }) => {
+    createUser: async(err, { email, password }, { user, token }) => {
       if (user) {
         return new Error(`Should be not-authorized to create user`);
       }
@@ -274,8 +274,7 @@ export default {
       }
       return new Error(`User with email ${email} exists`);
     },
-    
-    updateUser: async (err, { name, inkname, description, avatarUrl, email, password, tags }, { user }) => {
+    updateUser: async(err, { name, inkname, description, avatarUrl, email, password, tags }, { user }) => {
       let thumbUrl;
       if (!user) {
         return new Error('Authorization required');
@@ -301,7 +300,6 @@ export default {
       }, v => !!v);
       return User.findOneAndUpdate({ '_id': user.id }, payload, { new: true });
     },
-    
     removeUser: async(err, { _ }, { user, token }) => {
       if (!user) {
         return new Error('Authorization required');
@@ -312,12 +310,12 @@ export default {
       } else {
         return new Error('Token missing');
       }
-
+      
       await user.followersIds.forEach(async(followerId) => {
         let follower = await User.findById(followerId);
         await removeIds(follower, user.id, 'followingIds');
       });
-
+      
       await user.followingIds.forEach(async(followingId) => {
         let following = await User.findById(followingId);
         await removeIds(following, user.id, 'followersIds');
@@ -346,9 +344,26 @@ export default {
       return user;
     },
     
+    addEffect: async(_, { type }, { user }) => {
+      // const findType = await user.find( { effect: { $gt: 4 } } );
+      const findType = await user.findOne({"effect.type" : {"$eq" : type}});
+      return await User.findOneAndUpdate(
+        { _id: user.id },
+        { $addToSet: { effect: type }},
+        { new: true }
+      );
+    },
+  
+    removeEffect: async(_, { type }, { user }) => {
+      return await User.findOneAndUpdate(
+        { _id: user.id },
+        { effect: {$pull: { type }}},
+        { new: true }
+      );
+    },
+    
     //TODO - сделать метод покинуть команду
     // leaveTeam: async(_, { user: { id } }) => {
-    //
     // },
   }
 };

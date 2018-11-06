@@ -10,6 +10,14 @@ import Message from './Message';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
+const EffectSchema = new Schema({
+  date: { type: Date, default: Date.now() },
+  type: {
+    type: String,
+    enum: ['Pro']
+  }
+});
+
 class UserClass {
   validPassword(password) {
     return bcrypt.compareSync(password, this.password);
@@ -136,7 +144,8 @@ const UserSchema = new Schema({
   eventsIds: [ObjectId],
   tags: [String],
   teamId: ObjectId,
-  archivedWorksIds: [ObjectId]
+  archivedWorksIds: [ObjectId],
+  effect: [EffectSchema]
 });
 
 UserSchema.loadClass(UserClass);

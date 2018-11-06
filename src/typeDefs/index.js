@@ -6,10 +6,11 @@ export default gql`
   interface ISender {
     id: ID! @unique
     inkname: String @unique
-    email: String
     name: String
     thumbUrl: String
     avatarUrl: String
+    email: String
+    effect: [Effect]
   }
 
   interface IUser {
@@ -70,6 +71,7 @@ export default gql`
     members: [ISender]
     tags: [String]
     archivedWorks: [Work]
+    effect: [Effect]
   }
 
   type Like implements IResponsable {
@@ -116,7 +118,7 @@ export default gql`
     location: String
   }
 
-  type Team implements ISender & IUser {
+  type Team implements IUser {
     id: ID! @unique
     thumbUrl: String
     description: Description
@@ -196,6 +198,15 @@ export default gql`
     rating: Int
   }
 
+  enum EffectType {
+    ProType
+  }
+
+  type Effect {
+    date: Date
+    type: EffectType
+  }
+
   type Query {
     verifyEmailToken(token: String!, email: String!): Boolean
     verify(provider: String!, code: String!): User
@@ -232,6 +243,8 @@ export default gql`
     addComment(target: ID!, author: ID!, text: String!): IResponsable
     createUser(email: String!, password: String!): User
     removeUser(id: ID!): User
+    addEffect(type: String!): User
+    removeEffect(type: String!): User
     updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl:String, email: String, password: String, thumbUrl: String, tags: [String]): User
     addWork(url: String!, thumbUrl: String!, name: String!, description: String!, tags: [String]): User
     updateWork(id: ID, description: String, name: String, tags:[String]): Work
