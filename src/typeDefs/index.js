@@ -10,7 +10,7 @@ export default gql`
     thumbUrl: String
     avatarUrl: String
     email: String
-    effect: [Effect]
+    effects: [Effect]
   }
 
   interface IUser {
@@ -71,7 +71,7 @@ export default gql`
     members: [ISender]
     tags: [String]
     archivedWorks: [Work]
-    effect: [Effect]
+    effects: [Effect]
   }
 
   type Like implements IResponsable {

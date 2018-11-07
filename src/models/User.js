@@ -145,7 +145,7 @@ const UserSchema = new Schema({
   tags: [String],
   teamId: ObjectId,
   archivedWorksIds: [ObjectId],
-  effect: [EffectSchema]
+  effects: [EffectSchema]
 });
 
 UserSchema.loadClass(UserClass);
