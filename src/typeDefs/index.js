@@ -11,6 +11,7 @@ export default gql`
     avatarUrl: String
     email: String
     effects: [Effect]
+    trial: Boolean
   }
 
   interface IUser {
@@ -72,6 +73,7 @@ export default gql`
     tags: [String]
     archivedWorks: [Work]
     effects: [Effect]
+    trial: Boolean
   }
 
   type Like implements IResponsable {

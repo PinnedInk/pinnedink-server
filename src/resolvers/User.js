@@ -5,6 +5,7 @@ import { User, Token, Team, Message, Like, Comment, Event, Job, Work } from '../
 import { google } from 'googleapis';
 import { FB } from 'fb';
 import { removeIds, createTag } from '../utils';
+import moment from 'moment';
 
 const sendVerificationMail = async(email) => {
   const sessionSecret = process.env.SESSION_SECRET;
@@ -343,24 +344,34 @@ export default {
       await team.save();
       return user;
     },
-  
+    
     toggleEffect: async(__, { type }, { user }) => {
-      const isExistType = _.find(user.effects, { type });
-      if (isExistType){
+      const isExistEffect = _.find(user.effects, { type });
+      const worksCount = await Work.aggregate(
+        [{
+          $match: {
+            date: {
+              $gte: new Date(moment().startOf('month').utc().toISOString()),
+              $lt: new Date(moment().endOf('month').utc().toISOString())
+            }
+          }
+        }]
+      );
+      if (isExistEffect) {
         return await User.findOneAndUpdate(
           { _id: user.id },
-          { $pull: { effects: {_id: isExistType.id }}},
+          { $pull: { effects: { _id: isExistEffect.id } }, trial: worksCount.length <= 5 },
           { new: true }
         );
       } else {
         return await User.findOneAndUpdate(
           { _id: user.id },
-          { $addToSet: { effects: { type: type } }},
+          { $addToSet: { effects: { type: type } }, trial: null },
           { new: true }
         );
       }
     },
-  
+    
     
     //TODO - сделать метод покинуть команду
     // leaveTeam: async(_, { user: { id } }) => {

@@ -145,7 +145,8 @@ const UserSchema = new Schema({
   tags: [String],
   teamId: ObjectId,
   archivedWorksIds: [ObjectId],
-  effects: [EffectSchema]
+  effects: [EffectSchema],
+  trial: {type: Boolean, default: true}
 });
 
 UserSchema.loadClass(UserClass);
