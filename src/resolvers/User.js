@@ -4,7 +4,7 @@ import request from 'request';
 import { User, Token, Team, Message, Like, Comment, Event, Job, Work } from '../models';
 import { google } from 'googleapis';
 import { FB } from 'fb';
-import { addingToIds, removeIds, createTag } from '../utils';
+import { removeIds, createTag } from '../utils';
 
 const sendVerificationMail = async(email) => {
   const sessionSecret = process.env.SESSION_SECRET;
@@ -343,24 +343,24 @@ export default {
       await team.save();
       return user;
     },
-    
-    addEffect: async(_, { type }, { user }) => {
-      // const findType = await user.find( { effect: { $gt: 4 } } );
-      const findType = await user.findOne({"effect.type" : {"$eq" : type}});
-      return await User.findOneAndUpdate(
-        { _id: user.id },
-        { $addToSet: { effect: type }},
-        { new: true }
-      );
+  
+    toggleEffect: async(__, { type }, { user }) => {
+      const isExistType = _.find(user.effects, { type });
+      if (isExistType){
+        return await User.findOneAndUpdate(
+          { _id: user.id },
+          { $pull: { effects: {_id: isExistType.id }}},
+          { new: true }
+        );
+      } else {
+        return await User.findOneAndUpdate(
+          { _id: user.id },
+          { $addToSet: { effects: { type: type } }},
+          { new: true }
+        );
+      }
     },
   
-    removeEffect: async(_, { type }, { user }) => {
-      return await User.findOneAndUpdate(
-        { _id: user.id },
-        { effect: {$pull: { type }}},
-        { new: true }
-      );
-    },
     
     //TODO - сделать метод покинуть команду
     // leaveTeam: async(_, { user: { id } }) => {
