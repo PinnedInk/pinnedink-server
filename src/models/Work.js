@@ -29,6 +29,15 @@ class WorkClass {
       }
     });
   }
+  
+  get archived() {
+    const list = this.archivedUsersIds;
+    return User.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
 }
 
 const WorkSchema = new Schema({
@@ -41,7 +50,8 @@ const WorkSchema = new Schema({
   url: String,
   likesIds: [ObjectId],
   view: Number,
-  tags: [String]
+  tags: [String],
+  archivedUsersIds: [ObjectId]
 });
 
 WorkSchema.loadClass(WorkClass);

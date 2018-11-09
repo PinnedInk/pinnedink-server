@@ -213,21 +213,21 @@ export default {
       }
       return user;
     },
-    
+  
     follow: async(_, { inkname }, { user }) => {
       let target = null;
       let subscriber = user;
-
       if (inkname) {
         target = await User.findOne({ inkname });
         if (!target) {
           target = await Team.findOne({ inkname });
         }
       }
-      let index = subscriber.followingIds.indexOf(target.id);
-      if (index !== -1) {
-        subscriber.followingIds.splice(index, 1);
-        target.followersIds.splice(index, 1)
+      let targetId = subscriber.followingIds.indexOf(target.id);
+      let subscribeId = target.followersIds.indexOf(subscriber.id);
+      if (targetId !== -1) {
+        subscriber.followingIds.splice(targetId, 1);
+        target.followersIds.splice(subscribeId, 1)
       } else {
         subscriber.followingIds.push(target.id);
         target.followersIds.push(user.id);
