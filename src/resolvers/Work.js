@@ -1,5 +1,7 @@
 import { Work, User, Team } from '../models';
 import { removeIds, createTag } from '../utils';
+import moment from 'moment';
+import _ from 'lodash';
 
 export default {
   Query: {
@@ -35,7 +37,18 @@ export default {
     },
   },
   Mutation: {
-    addWork: async(_, { url, thumbUrl, name, description, tags }, { user }) => {
+    addWork: async(__, { url, thumbUrl, name, description, tags }, { user }) => {
+      const isPro = _.find(user.effects, { type: 'Pro' });
+      const worksCount = await Work.aggregate(
+        [{
+          $match: {
+            date: {
+              $gte: new Date(moment().startOf('month').utc().toISOString()),
+              $lt: new Date(moment().endOf('month').utc().toISOString())
+            }
+          }
+        }]
+      );
       const work = await Work.create({
         url,
         thumbUrl,
