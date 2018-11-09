@@ -49,7 +49,6 @@ export default {
           }
         }]
       );
-      
       const work = await Work.create({
         url,
         thumbUrl,
@@ -63,8 +62,6 @@ export default {
         await createTag(tags, work);
       }
       user.worksIds.push(work.id);
-      console.log('Change worksCount.length to 30');
-      user.trial = !(!isPro && worksCount.length >= 5);
       await user.save();
       return user;
     },

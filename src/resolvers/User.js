@@ -347,26 +347,16 @@ export default {
     
     toggleEffect: async(__, { type }, { user }) => {
       const isExistEffect = _.find(user.effects, { type });
-      const worksCount = await Work.aggregate(
-        [{
-          $match: {
-            date: {
-              $gte: new Date(moment().startOf('month').utc().toISOString()),
-              $lt: new Date(moment().endOf('month').utc().toISOString())
-            }
-          }
-        }]
-      );
       if (isExistEffect) {
         return await User.findOneAndUpdate(
           { _id: user.id },
-          { $pull: { effects: { _id: isExistEffect.id } }, trial: worksCount.length <= 5 },
+          { $pull: { effects: { _id: isExistEffect.id } } },
           { new: true }
         );
       } else {
         return await User.findOneAndUpdate(
           { _id: user.id },
-          { $addToSet: { effects: { type: type } }, trial: null },
+          { $addToSet: { effects: { type: type } } },
           { new: true }
         );
       }
