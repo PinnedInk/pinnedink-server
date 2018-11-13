@@ -118,7 +118,7 @@ export default gql`
     location: String
   }
 
-  type Team implements IUser {
+  type Team implements IUser & ISender {
     id: ID! @unique
     thumbUrl: String
     description: Description
@@ -132,6 +132,7 @@ export default gql`
     email: String
     avatarUrl: String
     tags: [String]
+    effects: [Effect]
   }
 
   type Work implements IResponsable {
