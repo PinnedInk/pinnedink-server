@@ -15,6 +15,11 @@ export default {
       return "User" // typename property must be set by your mock functions
     }
   },
+  IEffect: {
+    __resolveType(data) {
+      return "Effect" // typename property must be set by your mock functions
+    }
+  },
   IResponsable: {
     __resolveType(data) {
       // console.log('IResponsable: ', data);
