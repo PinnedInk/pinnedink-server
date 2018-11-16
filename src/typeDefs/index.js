@@ -199,6 +199,11 @@ export default gql`
     rating: Int
   }
 
+  interface IEffect {
+    date: Date
+    type: EffectType
+  }
+  
   enum EffectType {
     Pro
   }
@@ -244,7 +249,7 @@ export default gql`
     addComment(target: ID!, author: ID!, text: String!): IResponsable
     createUser(email: String!, password: String!): User
     removeUser(id: ID!): User
-    toggleEffect(type: String!): User
+    toggleEffect(type: String!): ISender
     updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl:String, email: String, password: String, thumbUrl: String, tags: [String]): User
     addWork(url: String!, thumbUrl: String!, name: String!, description: String!, tags: [String]): User
     updateWork(id: ID, description: String, name: String, tags:[String]): Work
