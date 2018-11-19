@@ -215,6 +215,7 @@ export default gql`
   }
 
   type Dialogue {
+    id: ID! @unique
     date: Date
     author: ISender
     members: [User]
@@ -241,6 +242,7 @@ export default gql`
     tags(target: String!): [String]
     filteredTags(value: String): [Tag]
     filteredUsers(value: String): [User]
+    dialogues(id: ID!): Dialogue
   }
 
   type Mutation {
