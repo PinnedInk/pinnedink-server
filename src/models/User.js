@@ -119,6 +119,14 @@ class UserClass {
       _id: id
     });
   }
+  
+  static getByInkname(receivers) {
+    return User.find({
+      'inkname': {
+        $in: receivers
+      }
+    });
+  }
 }
 
 const UserSchema = new Schema({
@@ -145,7 +153,8 @@ const UserSchema = new Schema({
   tags: [String],
   teamId: ObjectId,
   archivedWorksIds: [ObjectId],
-  effects: [EffectSchema]
+  effects: [EffectSchema],
+  dialogueIds: [ObjectId]
 });
 
 UserSchema.loadClass(UserClass);

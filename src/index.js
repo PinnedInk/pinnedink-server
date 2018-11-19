@@ -8,7 +8,7 @@ import passport from 'passport';
 import { ApolloServer, graphiqlExpress } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import _ from 'lodash';
-import { Comment, Like, Types, Message, User, Work, Job, Event, Team, Tag } from './resolvers';
+import { Comment, Like, Types, Message, User, Work, Job, Event, Team, Tag, Dialogue } from './resolvers';
 import typeDefs from './typeDefs';
 
 import googleAuth from './auth/google';
@@ -55,7 +55,7 @@ const initServer = async () => {
 
   const server = new ApolloServer({
     typeDefs,
-    resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag),
+    resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue),
     context: async ({ req }) => {
       const tokenKey = getToken(req);
       if (tokenKey) {
