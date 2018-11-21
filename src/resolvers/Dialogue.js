@@ -2,45 +2,71 @@ import { User, Message, Team, Dialogue } from '../models';
 
 export default {
   Query: {
-    // dialogue:(_, { id }) => Dialogue.findById(id),
+    dialogue: async(_, { id }) => {
+      return await Dialogue.findById(id);
+    },
+    dialogues: async(_, {}, { user }) => {
+      return await Dialogue.getList(user.dialogueIds);
+    },
   },
   Mutation: {
-    createDialogue: async(err, { receivers, text }, { user }) => {
-      let users = await User.getByInkname(receivers);
-      const dialogue = await Dialogue.create({
-        authorId: user.id,
-        members: [],
-        messages: [],
-        date: Date.now()
-      });
-      
-      users.map( async user => {
-        await dialogue.updateOne(
-          { $addToSet: { members: user.id } },
-          { new: true }
-        );
-      });
-      await User.bulkWrite(receivers.map((member => ({
-        updateOne: {
-          filter: { inkname: member },
-          update: { $addToSet: { dialogueIds: dialogue.id } },
-          upsert: true
+    updateDialogue: async(err, { text, dialogueId, receiver }, { user }) => {
+      if (receiver) {
+        let dialog;
+        let user = await User.findOne({ 'inkname': receiver });
+        let targetId = user.dialogueIds.indexOf(dialogueId);
+        
+        if (targetId !== -1) {
+          dialog = await Dialogue.findOneAndUpdate(
+            { _id: dialogueId },
+            { $pull: { membersIds: user.id } },
+            { new: true }
+          );
+          user.dialogueIds.splice(targetId, 1);
+        } else {
+          dialog = await Dialogue.findOneAndUpdate(
+            { _id: dialogueId },
+            { $addToSet: { membersIds: user.id } },
+            { new: true }
+          );
+          user.dialogueIds.push(dialogueId);
         }
-      }))));
-      await user.dialogueIds.push(dialogue.id);
-      await user.save();
+        await user.save();
+        return dialog;
+      }
       
       const message = await Message.create({
         type: 'Message',
         authorId: user.id,
         text,
         date: Date.now(),
-        targetId: dialogue.id
+        targetId: dialogueId
       });
-      await dialogue.messages.push(message._id);
-      await dialogue.members.push(user.id);
-      await dialogue.save();
-      return dialogue;
+      
+      return await Dialogue.findOneAndUpdate(
+        { _id: dialogueId },
+        { $push: { messagesIds: message.id } },
+        { new: true }
+      );
+    },
+    openDialogue: async(err, { id }, { user }) => {
+      const members = [id];
+      members.push(user.id);
+      
+      const existDialog = await Dialogue.find({
+        'membersIds': members
+      });
+      
+      if (existDialog.length) {
+        return existDialog[0];
+      }
+      
+      return await Dialogue.create({
+        authorId: user.id,
+        membersIds: members,
+        messagesIds: [],
+        date: Date.now()
+      });
     }
   }
 };

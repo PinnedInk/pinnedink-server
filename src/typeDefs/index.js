@@ -242,7 +242,8 @@ export default gql`
     tags(target: String!): [String]
     filteredTags(value: String): [Tag]
     filteredUsers(value: String): [User]
-    dialogues(id: ID!): Dialogue
+    dialogues: [Dialogue]
+    dialogue(id: ID): Dialogue
   }
 
   type Mutation {
@@ -270,6 +271,7 @@ export default gql`
     addEvent(title: String!, description: String!, date: SessionDateInput!, authorId: String, place: SessionPlaceInput!): Event
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
-    createDialogue(receivers: [String!], text: String!): User
+    openDialogue(id: ID!): User
+    updateDialogue(dialogueId: ID!, text: String, receiver:String): Dialogue
   }
 `;

@@ -129,14 +129,6 @@ class UserClass {
       _id: id
     });
   }
-  
-  static getByInkname(receivers) {
-    return User.find({
-      'inkname': {
-        $in: receivers
-      }
-    });
-  }
 }
 
 const UserSchema = new Schema({

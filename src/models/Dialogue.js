@@ -1,35 +1,47 @@
 import mongoose from 'mongoose';
 import User from './User';
-import Team from './Team';
+import Message from './Message';
 
 const { Schema } = mongoose;
-const { ObjectId, Mixed } = Schema.Types;
+const { ObjectId } = Schema.Types;
 
 class DialogueClass{
   
-  // static async getList(list) {
-  //   return Message.find({
-  //     '_id': { $in: list }
-  //   });
-  // }
-
-  // get target() {
-  //   return User.findById(this.targetId);
-  // }
-  //
-  // get author() {
-  //   if(this.type === 'Message'){
-  //     return User.findById(this.authorId);
-  //   }
-  //   return Team.findById(this.authorId);
-  // }
+  static async getList(list) {
+    return Dialogue.find({
+      '_id': { $in: list }
+    });
+  }
+  
+  get author() {
+    return User.findById(this.authorId);
+  }
+  
+  get messages() {
+    const list = this.messagesIds;
+    return Message.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
+  
+  get members() {
+    const list = this.membersIds;
+    list.push(this.authorId);
+    return User.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
 }
 
 const DialogueSchema = new Schema({
   date: Date,
   authorId: ObjectId,
-  members: [ObjectId],
-  messages: [ObjectId]
+  membersIds: [ObjectId],
+  messagesIds: [ObjectId]
 });
 
 DialogueSchema.loadClass(DialogueClass);
