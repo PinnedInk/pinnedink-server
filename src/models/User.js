@@ -6,6 +6,7 @@ import Token from './Token';
 import Team from './Team';
 import Like from './Like';
 import Message from './Message';
+import Dialogue from './Dialogue';
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -53,6 +54,15 @@ class UserClass {
   get team() {
     return Team.findById(this.teamId);
   }
+  
+  get dialogues() {
+    return Dialogue.find({
+      '_id': {
+        $in: this.dialogueIds
+      }
+    });
+  }
+  
   get likes() {
     const list = this.likesIds;
     return Like.find({
@@ -145,7 +155,8 @@ const UserSchema = new Schema({
   tags: [String],
   teamId: ObjectId,
   archivedWorksIds: [ObjectId],
-  effects: [EffectSchema]
+  effects: [EffectSchema],
+  dialogueIds: [ObjectId]
 });
 
 UserSchema.loadClass(UserClass);

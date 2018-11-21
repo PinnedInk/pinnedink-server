@@ -8,5 +8,6 @@ import Message from './Message';
 import Job from './Job';
 import Event from './Event';
 import Tag from './Tag';
+import Dialogue from './Dialogue';
 
-export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag }
+export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue }

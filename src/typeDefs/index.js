@@ -72,6 +72,7 @@ export default gql`
     tags: [String]
     archivedWorks: [Work]
     effects: [Effect]
+    dialogues: [Dialogue]
   }
 
   type Like implements IResponsable {
@@ -213,6 +214,14 @@ export default gql`
     type: EffectType
   }
 
+  type Dialogue {
+    id: ID! @unique
+    date: Date
+    author: ISender
+    members: [User]
+    messages: [Message]
+  }
+
   type Query {
     verifyEmailToken(token: String!, email: String!): Boolean
     verify(provider: String!, code: String!): User
@@ -233,6 +242,8 @@ export default gql`
     tags(target: String!): [String]
     filteredTags(value: String): [Tag]
     filteredUsers(value: String): [User]
+    dialogues: [Dialogue]
+    dialogue(id: ID): Dialogue
   }
 
   type Mutation {
@@ -249,7 +260,7 @@ export default gql`
     addComment(target: ID!, author: ID!, text: String!): IResponsable
     createUser(email: String!, password: String!): User
     removeUser(id: ID!): User
-    toggleEffect(type: String!): ISender
+    toggleEffect(type: String!): User
     updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl:String, email: String, password: String, thumbUrl: String, tags: [String]): User
     addWork(url: String!, thumbUrl: String!, name: String!, description: String!, tags: [String]): User
     updateWork(id: ID, description: String, name: String, tags:[String]): Work
@@ -260,5 +271,7 @@ export default gql`
     addEvent(title: String!, description: String!, date: SessionDateInput!, authorId: String, place: SessionPlaceInput!): Event
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
+    openDialogue(id: ID!): User
+    updateDialogue(dialogueId: ID!, text: String, receiver:String): Dialogue
   }
 `;
