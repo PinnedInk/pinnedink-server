@@ -271,7 +271,8 @@ export default gql`
     addEvent(title: String!, description: String!, date: SessionDateInput!, authorId: String, place: SessionPlaceInput!): Event
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
-    openDialogue(id: ID!): User
+    openDialogue(id: ID!): Dialogue
     updateDialogue(dialogueId: ID!, text: String, receiver:String): Dialogue
+    deleteDialogue(id: ID!, authorId: ID! ): User
   }
 `;
