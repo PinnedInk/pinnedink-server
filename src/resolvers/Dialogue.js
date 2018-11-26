@@ -1,4 +1,9 @@
 import { User, Message, Dialogue } from '../models';
+import { PubSub, withFilter } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
+
+const ADD_MESSAGE_TO_DIALOGUE = 'add_message_to_dialogue';
 
 export default {
   Query: {
@@ -10,7 +15,7 @@ export default {
     },
   },
   Mutation: {
-    updateDialogue: async(err, { text, dialogueId, receiver }, { user }) => {
+    updateDialogue: async(err, { dialogueId, receiver }, { user }) => {
       if (receiver) {
         let dialogue;
         let user = await User.findOne({ 'inkname': receiver });
@@ -35,6 +40,10 @@ export default {
         return dialogue;
       }
       
+      return null;
+    },
+    addDialogMessage: async(err, { text, dialogueId }, { user }) => {
+      
       const message = await Message.create({
         type: 'Message',
         authorId: user.id,
@@ -43,17 +52,21 @@ export default {
         targetId: dialogueId
       });
       
-      return await Dialogue.findOneAndUpdate(
+      const dialogue = await Dialogue.findOneAndUpdate(
         { _id: dialogueId },
         { $push: { messagesIds: message.id } },
         { new: true }
       );
+      
+      pubsub.publish(ADD_MESSAGE_TO_DIALOGUE, { messageAdded: message, dialogueId: dialogue.id });
+      
+      return dialogue;
     },
     
     deleteDialogue: async(err, { id, authorId }, { user }) => {
       const dialogue = await Dialogue.findOne({ _id: id });
       
-      if (authorId === user.id){
+      if (authorId === user.id) {
         await User.bulkWrite(dialogue.membersIds.map((id => ({
           updateOne: {
             filter: { '_id': id },
@@ -64,7 +77,7 @@ export default {
         await dialogue.remove();
         return user;
       }
-    
+      
       let userPos = user.dialogueIds.indexOf(id);
       let dialoguePos = dialogue.membersIds.indexOf(user.id);
       user.dialogueIds.splice(userPos, 1);
@@ -78,22 +91,22 @@ export default {
     openDialogue: async(err, { id }, { user }) => {
       const members = [id];
       members.push(user.id);
-  
+      
       const existDialog = await Dialogue.find({
         'membersIds': members
       });
-  
+      
       if (existDialog.length) {
         return existDialog[0];
       }
-  
+      
       const dialogue = await Dialogue.create({
         authorId: user.id,
         membersIds: members,
         messagesIds: [],
         date: Date.now()
       });
-  
+      
       await User.bulkWrite(members.map((id => ({
         updateOne: {
           filter: { '_id': id },
@@ -101,7 +114,14 @@ export default {
           upsert: true
         }
       }))));
+      
+      
       return dialogue;
     }
-  }
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: () => pubsub.asyncIterator(ADD_MESSAGE_TO_DIALOGUE)
+    }
+  },
 };

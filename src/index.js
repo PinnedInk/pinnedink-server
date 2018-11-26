@@ -14,6 +14,10 @@ import typeDefs from './typeDefs';
 import googleAuth from './auth/google';
 import facebookAuth from './auth/facebook';
 
+
+import { createServer } from 'http';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { Token } from './models';
 
 console.log('Starting server for env:', process.env.NODE_ENV);
@@ -52,6 +56,7 @@ const initServer = async () => {
       return null;
     }
   };
+  
 
   const server = new ApolloServer({
     typeDefs,
@@ -80,15 +85,32 @@ const initServer = async () => {
       return null;
     }
   });
-
+  
   server.applyMiddleware({ app });
 }
+
 app.get('/', (req, res, next) => {
   res.send('This is Inkwell API server');
 });
 
 app.listen({ port }, () => {
   console.log(`🚀  Server ready at ${port}`);
+});
+
+const WS_PORT = 5000;
+
+const ws = createServer(app);
+
+ws.listen(WS_PORT, () => {
+  console.log(`GraphQL Server is now running on http://localhost:${WS_PORT}`);
+  new SubscriptionServer({
+    execute,
+    subscribe,
+    schema: typeDefs
+  }, {
+    server: ws,
+    path: '/subscriptions',
+  });
 });
 
 initServer();
