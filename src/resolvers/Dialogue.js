@@ -43,7 +43,7 @@ export default {
       return null;
     },
     addDialogMessage: async(err, { text, dialogueId }, { user }) => {
-      
+
       const message = await Message.create({
         type: 'Message',
         authorId: user.id,
@@ -51,16 +51,19 @@ export default {
         date: Date.now(),
         targetId: dialogueId
       });
-      
+
       const dialogue = await Dialogue.findOneAndUpdate(
         { _id: dialogueId },
         { $push: { messagesIds: message.id } },
         { new: true }
       );
+      // pubsub.publish(ADD_MESSAGE_TO_DIALOGUE, { messageAdded: message, dialogueId: dialogue.id });
+ 
+      pubsub.publish('messageAdded', {'messageAdded': {
+        message, dialogueId: message.targetId
+      }});
       
-      pubsub.publish(ADD_MESSAGE_TO_DIALOGUE, { messageAdded: message, dialogueId: dialogue.id });
-      
-      return dialogue;
+      return message;
     },
     
     deleteDialogue: async(err, { id, authorId }, { user }) => {
@@ -121,7 +124,9 @@ export default {
   },
   Subscription: {
     messageAdded: {
-      subscribe: () => pubsub.asyncIterator(ADD_MESSAGE_TO_DIALOGUE)
+      subscribe: withFilter(() => pubsub.asyncIterator('messageAdded'), (payload, variables) => {
+        return payload.dialogueId === variables.dialogueId;
+      }),
     }
   },
 };

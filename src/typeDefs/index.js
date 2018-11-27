@@ -278,6 +278,6 @@ export default gql`
     openDialogue(id: ID!): Dialogue
     updateDialogue(dialogueId: ID!, receiver:String): Dialogue
     deleteDialogue(id: ID!, authorId: ID! ): User
-    addDialogMessage(dialogueId: ID!, text: String): Dialogue
+    addDialogMessage(dialogueId: ID, text: String): Message
   }
 `;

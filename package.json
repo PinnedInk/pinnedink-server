@@ -36,6 +36,7 @@
     "google-auth-library": "^1.6.1",
     "googleapis": "^33.0.0",
     "graphql": "^0.13.2",
+    "graphql-subscriptions": "^1.0.0",
     "helmet": "^3.13.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.10",
@@ -44,7 +45,8 @@
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
