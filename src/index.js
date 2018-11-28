@@ -5,7 +5,7 @@ import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
 import passport from 'passport';
-import { ApolloServer, graphiqlExpress } from 'apollo-server-express';
+import { ApolloServer, graphiqlExpress, makeExecutableSchema } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import _ from 'lodash';
 import { Comment, Like, Types, Message, User, Work, Job, Event, Team, Tag, Dialogue } from './resolvers';
@@ -33,6 +33,7 @@ app.use(helmet());
 app.use(compression());
 app.use(express.json());
 
+
 const initServer = async() => {
   try {
     await mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
@@ -56,7 +57,6 @@ const initServer = async() => {
       return null;
     }
   };
-  
   
   const server = new ApolloServer({
     typeDefs,
@@ -83,7 +83,7 @@ const initServer = async() => {
         }
       }
       return null;
-    }
+    },
   });
   
   server.applyMiddleware({ app });
@@ -93,14 +93,15 @@ app.get('/', (req, res, next) => {
   res.send('This is Inkwell API server');
 });
 
+
 const ws = createServer(app);
 
 ws.listen(PORT, () => {
-  console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
+  console.log(`GraphQL Server is now running on http://localhost:4000`);
   new SubscriptionServer({
     execute,
     subscribe,
-    schema: { typeDefs, resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue)}
+    schema: makeExecutableSchema({ typeDefs, resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue) })
   }, {
     server: ws,
     path: '/subscriptions',

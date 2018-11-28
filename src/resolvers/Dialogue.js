@@ -43,7 +43,7 @@ export default {
       return null;
     },
     addDialogMessage: async(err, { text, dialogueId }, { user }) => {
-
+      
       const message = await Message.create({
         type: 'Message',
         authorId: user.id,
@@ -51,17 +51,14 @@ export default {
         date: Date.now(),
         targetId: dialogueId
       });
-
+      
       const dialogue = await Dialogue.findOneAndUpdate(
         { _id: dialogueId },
         { $push: { messagesIds: message.id } },
         { new: true }
       );
-      // pubsub.publish(ADD_MESSAGE_TO_DIALOGUE, { messageAdded: message, dialogueId: dialogue.id });
- 
-      pubsub.publish('messageAdded', {'messageAdded': {
-        message, dialogueId: message.targetId
-      }});
+     
+      await pubsub.publish(ADD_MESSAGE_TO_DIALOGUE, { messageAdded: message, dialogueId });
       
       return message;
     },
@@ -92,8 +89,10 @@ export default {
     },
     
     openDialogue: async(err, { id }, { user }) => {
-      const members = [id];
-      members.push(user.id);
+      let members = [user.id];
+      if (id) {
+        members.push(id);
+      }
       
       const existDialog = await Dialogue.find({
         'membersIds': members
@@ -118,13 +117,12 @@ export default {
         }
       }))));
       
-      
       return dialogue;
     }
   },
   Subscription: {
     messageAdded: {
-      subscribe: withFilter(() => pubsub.asyncIterator('messageAdded'), (payload, variables) => {
+      subscribe: withFilter(() => pubsub.asyncIterator([ADD_MESSAGE_TO_DIALOGUE]), (payload, variables) => {
         return payload.dialogueId === variables.dialogueId;
       }),
     }
