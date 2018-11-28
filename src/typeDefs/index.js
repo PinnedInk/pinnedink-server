@@ -221,6 +221,10 @@ export default gql`
     members: [User]
     messages: [Message]
   }
+  
+  type Subscription {
+    messageAdded(dialogueId: ID!): Message
+  }
 
   type Query {
     verifyEmailToken(token: String!, email: String!): Boolean
@@ -271,7 +275,9 @@ export default gql`
     addEvent(title: String!, description: String!, date: SessionDateInput!, authorId: String, place: SessionPlaceInput!): Event
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
-    openDialogue(id: ID!): User
-    updateDialogue(dialogueId: ID!, text: String, receiver:String): Dialogue
+    openDialogue(id: ID): Dialogue
+    updateDialogue(dialogueId: ID!, receiver:String): Dialogue
+    deleteDialogue(id: ID!, authorId: ID! ): User
+    addDialogMessage(dialogueId: ID, text: String): Message
   }
 `;
