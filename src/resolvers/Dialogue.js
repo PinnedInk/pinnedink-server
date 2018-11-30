@@ -68,42 +68,45 @@ export default {
       return user;
     },
     openDialogue: async(err, { id }, { user }) => {
-      let target;
-      let members = [user.id];
-      if (id) {
-        members.push(id);
-      }
       
-      const existDialog = await Dialogue.find({
-        'membersIds': members
+      const isMember = await Dialogue.find({
+        'membersIds': [user.id],
+        'authorId': id
+      });
+      const isAuthor = await Dialogue.find({
+        'membersIds': [id],
+        'authorId': user.id
       });
       
-      if (existDialog.length) {
-        return existDialog[0];
+      if (isMember.length || isAuthor.length) {
+        if (isMember.length) {
+          return isMember[0];
+        }
+        return isAuthor[0];
       }
       
       const dialogue = await Dialogue.create({
         authorId: user.id,
-        membersIds: members,
+        membersIds: [id],
         messagesIds: [],
         date: Date.now()
       });
       
-      
-      const matchedUsers = await User.bulkWrite(members.map((id => ({
-        updateOne: {
-          filter: { '_id': id },
-          update: { $addToSet: { dialogueIds: dialogue.id } }
-        }
-      }))));
-      
-      if (matchedUsers.matchedCount !== members.length) {
+      const isUpdatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        { $addToSet: { dialogueIds: dialogue.id } },
+        { new: true }
+      );
+      if (!isUpdatedUser) {
         await Team.findOneAndUpdate(
           { _id: id },
           { $addToSet: { dialogueIds: dialogue.id } },
-          { new: true, upsert: true  }
+          { new: true, upsert: true }
         );
       }
+      
+      user.dialogueIds.push(dialogue.id);
+      await user.save();
       
       return dialogue;
     }

@@ -1,32 +1,41 @@
-import { Team, Message, User } from '../models';
-import { addingToIds, createTag } from '../utils';
+import { Team, Message, User, Dialogue } from '../models';
+import { createTag } from '../utils';
 
-// TODO исправить sendInvite - на createMessage from Message model
-
-const sendInvites = async (inkname, members, text) => {
+const sendInvites = async(inkname, members, text) => {
   const team = await Team.findOne({ inkname });
-  //members
-  //const users = await User.updateMany({ inkname: { $in: members } })
-  const users = await User.find({ inkname: { $in: members }});
+  const users = await User.find({ inkname: { $in: members } });
   const usersId = users.map(u => u.id);
-  const messages = await Message.updateMany({
-    targetId: { $in: usersId },
-    type: 'Invite',
-    authorId: team.id
-  }, {     
-    text,
-    date: Date.now() 
-  }, { upsert: true, new: true });
-  //console.log('messages', messages);
-  const messagesIds = messages.upserted.map(m => m._id);
   
-  await Team.updateOne({ inkname }, { $push: { messagesIds } });
-  await User.bulkWrite(users.map(((user, i) => ({
-    updateOne: {
-      filter: { _id: user.id },
-      update: { $push: { messagesIds: messagesIds[i] } }
-    }
-  }))));
+  usersId.map(async userID => {
+    const dialogue = await Dialogue.create({
+      membersIds: [userID],
+      authorId: team.id,
+      date: Date.now(),
+      messagesIds: []
+    });
+    const message = await Message.create({
+      type: 'Invite',
+      authorId: team.id,
+      text,
+      date: Date.now(),
+      targetId: dialogue.id
+    });
+    
+    dialogue.messagesIds.push(message.id);
+    await dialogue.save();
+    
+    await Team.findOneAndUpdate(
+      { inkname },
+      { $push: { dialogueIds: dialogue.id } },
+      { new: true }
+    );
+    
+    await User.findOneAndUpdate(
+      { _id: userID },
+      { $addToSet: { dialogueIds: dialogue.id } },
+      { new: true }
+    );
+  });
 };
 
 export default {

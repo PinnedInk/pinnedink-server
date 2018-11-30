@@ -15,7 +15,17 @@ class DialogueClass{
   }
   
   get author() {
-    return User.findById(this.authorId);
+    const getAuthor = async(authorId) => {
+      let isExistAuthor;
+      let author = await User.findOne({ '_id': authorId }, (err, author) => {
+        isExistAuthor = author;
+      });
+      if (!isExistAuthor) {
+        return await Team.findOne({ '_id': authorId });
+      }
+      return author;
+    };
+    return getAuthor(this.authorId);
   }
   
   get messages() {
@@ -41,7 +51,7 @@ class DialogueClass{
           $in: list
         }
       });
-      return [].concat(users).concat(teams)
+      return [].concat(users).concat(teams);
     };
     return getAllFromList(list);
   }

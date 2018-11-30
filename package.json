@@ -44,9 +44,7 @@
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",
     "request": "^2.88.0",
-    "subscriptions-transport-ws": "^0.9.15",
-    "babel-runtime": "^6.26.0",
-    "google-auth-library": "^1.6.1"
+    "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
