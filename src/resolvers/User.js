@@ -173,7 +173,13 @@ export default {
       return null;
     },
     filteredUsers: async(_, { value }) => {
-      return await User.find({ 'inkname': { $regex: '^' + value, $options: 'i' } });
+      if (value) {
+        let user = await User.find({ 'inkname': { $regex: '^' + value, $options: 'i' } });
+        if (!user) {
+          user = await Team.find({ 'inkname': { $regex: '^' + value, $options: 'i' } });
+        }
+        return user;
+      }
     },
   },
   Mutation: {

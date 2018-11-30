@@ -19,6 +19,7 @@ const sendInvites = async (inkname, members, text) => {
   }, { upsert: true, new: true });
   //console.log('messages', messages);
   const messagesIds = messages.upserted.map(m => m._id);
+  
   await Team.updateOne({ inkname }, { $push: { messagesIds } });
   await User.bulkWrite(users.map(((user, i) => ({
     updateOne: {
@@ -34,7 +35,7 @@ export default {
     teams: (_, { ids }) => Team.getList(ids),
   },
   Mutation: {
-    createTeam: async(_, { inkname, description, email, members, avatarUrl, text, tags }, { user }) => {
+    createTeam: async(_, { inkname, description, email, members, avatarUrl, text, tags, name }, { user }) => {
       let thumbUrl;
       if (avatarUrl) {
         thumbUrl = `avatar/thumbnail/${avatarUrl}`;
@@ -44,6 +45,7 @@ export default {
         inkname
       }, {
         tags,
+        name,
         description,
         ownerId: user.id,
         email,

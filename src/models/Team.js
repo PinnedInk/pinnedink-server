@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import User from './User';
 import Work from './Work';
 import Message from './Message';
+import Dialogue from './Dialogue';
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -23,6 +24,16 @@ class TeamClass{
     return User.find({
       '_id': {
         $in: list
+      }
+    });
+  }
+  
+  get dialogues() {
+    const list = this.dialogueIds;
+    list.push(this.ownerId);
+    return Dialogue.find({
+      '_id': {
+        $in: this.dialogueIds
       }
     });
   }
@@ -66,12 +77,14 @@ const TeamSchema = new Schema({
   membersIds: [ObjectId],
   ownerId: ObjectId,
   inkname: String,
+  name: String,
   followersIds: [ObjectId],
   messagesIds: [ObjectId],
   thumbUrl: String,
   avatarUrl: String,
   email: String,
-  tags: [String]
+  tags: [String],
+  dialogueIds: [ObjectId]
 });
 
 TeamSchema.loadClass(TeamClass);
