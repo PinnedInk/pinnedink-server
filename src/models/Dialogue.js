@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import User from './User';
+import Team from './Team';
 import Message from './Message';
 
 const { Schema } = mongoose;
@@ -14,7 +15,17 @@ class DialogueClass{
   }
   
   get author() {
-    return User.findById(this.authorId);
+    const getAuthor = async(authorId) => {
+      let isExistAuthor;
+      let author = await User.findOne({ '_id': authorId }, (err, author) => {
+        isExistAuthor = author;
+      });
+      if (!isExistAuthor) {
+        return await Team.findOne({ '_id': authorId });
+      }
+      return author;
+    };
+    return getAuthor(this.authorId);
   }
   
   get messages() {
@@ -29,11 +40,20 @@ class DialogueClass{
   get members() {
     const list = this.membersIds;
     list.push(this.authorId);
-    return User.find({
-      '_id': {
-        $in: list
-      }
-    });
+    const getAllFromList = async(list) => {
+      const users = await User.find({
+        '_id': {
+          $in: list
+        }
+      });
+      const teams = await Team.find({
+        '_id': {
+          $in: list
+        }
+      });
+      return [].concat(users).concat(teams);
+    };
+    return getAllFromList(list);
   }
 }
 

@@ -23,6 +23,7 @@ export default gql`
     followers: [ISender]
     works: [Work]
     tags: [String]
+    dialogues: [Dialogue]
   }
 
   interface IResponsable {
@@ -134,6 +135,7 @@ export default gql`
     avatarUrl: String
     tags: [String]
     effects: [Effect]
+    dialogues: [Dialogue]
   }
 
   type Work implements IResponsable {
@@ -204,7 +206,7 @@ export default gql`
     date: Date
     type: EffectType
   }
-  
+
   enum EffectType {
     Pro
   }
@@ -221,9 +223,10 @@ export default gql`
     members: [User]
     messages: [Message]
   }
-  
+
   type Subscription {
     messageAdded(dialogueId: ID!): Message
+    userUpdated(dialogueId: ID!): User
   }
 
   type Query {
@@ -255,7 +258,7 @@ export default gql`
     logout: User
     login(email: String!, password: String!): User
     like(targetId: ID!, authorId: ID!): IResponsable
-    createTeam(inkname: String!, description: DesriptionInput, email: String, avatarUrl: String, members: [String], text: String, tags: [String]): Team
+    createTeam(inkname: String!, name: String, description: DesriptionInput, email: String, avatarUrl: String, members: [String], text: String, tags: [String]): Team
     updateTeam(inkname:String, description: DesriptionInput): Team
     inviteToTeam(inkname: String!, member: String): Team
     applyInvite(inkname: String): User
@@ -276,7 +279,7 @@ export default gql`
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
     openDialogue(id: ID): Dialogue
-    updateDialogue(dialogueId: ID!, receiver:String): Dialogue
+    updateDialogueUsers(dialogueId: ID!, receiver:String): Dialogue
     deleteDialogue(id: ID!, authorId: ID! ): User
     addDialogMessage(dialogueId: ID, text: String): Message
   }

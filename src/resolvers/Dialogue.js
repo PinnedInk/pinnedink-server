@@ -1,9 +1,9 @@
-import { User, Message, Dialogue } from '../models';
+import { User, Dialogue, Team } from '../models';
 import { PubSub, withFilter } from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
 
-const ADD_MESSAGE_TO_DIALOGUE = 'add_message_to_dialogue';
+const UPDATED_DIALOGUE_USER = 'updated_dialogue_user';
 
 export default {
   Query: {
@@ -15,7 +15,7 @@ export default {
     },
   },
   Mutation: {
-    updateDialogue: async(err, { dialogueId, receiver }, { user }) => {
+    updateDialogueUsers: async(err, { dialogueId, receiver }) => {
       if (receiver) {
         let dialogue;
         let user = await User.findOne({ 'inkname': receiver });
@@ -37,32 +37,12 @@ export default {
           user.dialogueIds.push(dialogueId);
         }
         await user.save();
+        await pubsub.publish(UPDATED_DIALOGUE_USER, { userUpdated: user, dialogueId });
         return dialogue;
       }
       
       return null;
     },
-    addDialogMessage: async(err, { text, dialogueId }, { user }) => {
-      
-      const message = await Message.create({
-        type: 'Message',
-        authorId: user.id,
-        text,
-        date: Date.now(),
-        targetId: dialogueId
-      });
-      
-      const dialogue = await Dialogue.findOneAndUpdate(
-        { _id: dialogueId },
-        { $push: { messagesIds: message.id } },
-        { new: true }
-      );
-     
-      await pubsub.publish(ADD_MESSAGE_TO_DIALOGUE, { messageAdded: message, dialogueId });
-      
-      return message;
-    },
-    
     deleteDialogue: async(err, { id, authorId }, { user }) => {
       const dialogue = await Dialogue.findOne({ _id: id });
       
@@ -87,44 +67,55 @@ export default {
       await user.save();
       return user;
     },
-    
     openDialogue: async(err, { id }, { user }) => {
-      let members = [user.id];
-      if (id) {
-        members.push(id);
-      }
       
-      const existDialog = await Dialogue.find({
-        'membersIds': members
+      const isMember = await Dialogue.find({
+        'membersIds': [user.id],
+        'authorId': id
+      });
+      const isAuthor = await Dialogue.find({
+        'membersIds': [id],
+        'authorId': user.id
       });
       
-      if (existDialog.length) {
-        return existDialog[0];
+      if (isMember.length || isAuthor.length) {
+        if (isMember.length) {
+          return isMember[0];
+        }
+        return isAuthor[0];
       }
       
       const dialogue = await Dialogue.create({
         authorId: user.id,
-        membersIds: members,
+        membersIds: [id],
         messagesIds: [],
         date: Date.now()
       });
       
-      await User.bulkWrite(members.map((id => ({
-        updateOne: {
-          filter: { '_id': id },
-          update: { $addToSet: { dialogueIds: dialogue.id } },
-          upsert: true
-        }
-      }))));
+      const isUpdatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        { $addToSet: { dialogueIds: dialogue.id } },
+        { new: true }
+      );
+      if (!isUpdatedUser) {
+        await Team.findOneAndUpdate(
+          { _id: id },
+          { $addToSet: { dialogueIds: dialogue.id } },
+          { new: true, upsert: true }
+        );
+      }
+      
+      user.dialogueIds.push(dialogue.id);
+      await user.save();
       
       return dialogue;
     }
   },
   Subscription: {
-    messageAdded: {
-      subscribe: withFilter(() => pubsub.asyncIterator([ADD_MESSAGE_TO_DIALOGUE]), (payload, variables) => {
+    userUpdated: {
+      subscribe: withFilter(() => pubsub.asyncIterator([UPDATED_DIALOGUE_USER]), (payload, variables) => {
         return payload.dialogueId === variables.dialogueId;
       }),
     }
-  },
+  }
 };
