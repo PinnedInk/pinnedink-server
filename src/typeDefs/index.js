@@ -226,6 +226,7 @@ export default gql`
 
   type Subscription {
     messageAdded(dialogueId: ID!): Message
+    messageDeleted(dialogueId: ID!): Message
     userUpdated(dialogueId: ID!): User
   }
 
@@ -262,7 +263,7 @@ export default gql`
     updateTeam(inkname:String, description: DesriptionInput): Team
     inviteToTeam(inkname: String!, member: String): Team
     applyInvite(inkname: String): User
-    removeMessage(id: ID!): User
+    removeMessage(id: ID!): Dialogue
     createMessage(receivers: [String!], text: String!): User
     addComment(target: ID!, author: ID!, text: String!): IResponsable
     createUser(email: String!, password: String!): User

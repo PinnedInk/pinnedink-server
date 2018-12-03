@@ -43,22 +43,25 @@ export default {
       
       return null;
     },
-    deleteDialogue: async(err, { id, authorId }, { user }) => {
-      const dialogue = await Dialogue.findOne({ _id: id });
-      
+    deleteDialogue: async(err, { id: dialogueId, authorId }, { user }) => {
+      const dialogue = await Dialogue.findOne({ _id: dialogueId });
       if (authorId === user.id) {
-        await User.bulkWrite(dialogue.membersIds.map((id => ({
-          updateOne: {
-            filter: { '_id': id },
-            update: { $pull: { dialogueIds: dialogue.id } },
-            new: true
-          }
-        }))));
+        if (dialogue.membersIds.length) {
+          await User.bulkWrite(dialogue.membersIds.map((id => ({
+            updateOne: {
+              filter: { '_id': id },
+              update: { $pull: { dialogueIds: dialogue.id } },
+              new: true
+            }
+          }))));
+        }
+        let userPos = user.dialogueIds.indexOf(dialogueId);
+        user.dialogueIds.splice(userPos, 1);
+        await user.save();
         await dialogue.remove();
         return user;
       }
-      
-      let userPos = user.dialogueIds.indexOf(id);
+      let userPos = user.dialogueIds.indexOf(dialogueId);
       let dialoguePos = dialogue.membersIds.indexOf(user.id);
       user.dialogueIds.splice(userPos, 1);
       dialogue.membersIds.splice(dialoguePos, 1);
@@ -67,14 +70,15 @@ export default {
       await user.save();
       return user;
     },
-    openDialogue: async(err, { id }, { user }) => {
+    openDialogue: async(err, { targetId }, { user }) => {
       
       const isMember = await Dialogue.find({
         'membersIds': [user.id],
-        'authorId': id
+        'authorId': targetId
       });
+      
       const isAuthor = await Dialogue.find({
-        'membersIds': [id],
+        'membersIds': [targetId],
         'authorId': user.id
       });
       
@@ -87,19 +91,19 @@ export default {
       
       const dialogue = await Dialogue.create({
         authorId: user.id,
-        membersIds: [id],
+        membersIds: targetId ? [targetId] : [],
         messagesIds: [],
         date: Date.now()
       });
       
-      const isUpdatedUser = await User.findOneAndUpdate(
-        { _id: id },
+      const isUserDialogue = await User.findOneAndUpdate(
+        { _id: targetId },
         { $addToSet: { dialogueIds: dialogue.id } },
         { new: true }
       );
-      if (!isUpdatedUser) {
+      if (!isUserDialogue && targetId) {
         await Team.findOneAndUpdate(
-          { _id: id },
+          { _id: targetId },
           { $addToSet: { dialogueIds: dialogue.id } },
           { new: true, upsert: true }
         );
