@@ -16,7 +16,7 @@ const sendInvites = async(inkname, members, text) => {
     const message = await Message.create({
       type: 'Invite',
       authorId: team.id,
-      text,
+      text: text || 'Join to our team',
       date: Date.now(),
       targetId: dialogue.id
     });

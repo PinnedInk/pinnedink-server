@@ -19,6 +19,9 @@ export default {
       if (receiver) {
         let dialogue;
         let user = await User.findOne({ 'inkname': receiver });
+        if (!user) {
+          return null;
+        }
         let targetId = user.dialogueIds.indexOf(dialogueId);
         
         if (targetId !== -1) {
@@ -70,18 +73,15 @@ export default {
       await user.save();
       return user;
     },
-    openDialogue: async(err, { targetId }, { user }) => {
-      
+    openDialogue: async(err, { id: targetId }, { user }) => {
       const isMember = await Dialogue.find({
         'membersIds': [user.id],
         'authorId': targetId
       });
-      
       const isAuthor = await Dialogue.find({
         'membersIds': [targetId],
         'authorId': user.id
       });
-      
       if (isMember.length || isAuthor.length) {
         if (isMember.length) {
           return isMember[0];
