@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import User from './User';
 import Team from './Team';
+import Dialogue from './Dialogue';
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -22,7 +23,7 @@ class MessageClass{
   }
 
   get target() {
-    return User.findById(this.targetId);
+    return Dialogue.findById(this.targetId);
   }
   
   get author() {

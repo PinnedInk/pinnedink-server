@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import jwt from 'jsonwebtoken';
 import request from 'request';
-import { User, Token, Team, Message, Like, Comment, Event, Job, Work } from '../models';
+import { User, Token, Team, Message, Like, Comment, Event, Job, Work, Dialogue, Tag } from '../models';
 import { google } from 'googleapis';
 import { FB } from 'fb';
 import { removeIds, createTag } from '../utils';
@@ -338,9 +338,15 @@ export default {
       await User.findByIdAndRemove(user.id);
       return null;
     },
-    
-    applyInvite: async(_, { inkname }, { user }) => {
+    applyInvite: async(_, { inkname, messageId }, { user }) => {
       const team = await Team.findOne({ inkname });
+      const message = await Message.findByIdAndRemove(messageId);
+      const dialogueId = message.targetId;
+      await Dialogue.findOneAndUpdate(
+        { _id: dialogueId },
+        { $pull: { messagesIds: message.id } },
+        { new: true }
+      );
       user.teamId = team.id;
       if (team.membersIds.indexOf(user.id) !== -1) {
         return null;
@@ -350,7 +356,6 @@ export default {
       await team.save();
       return user;
     },
-    
     toggleEffect: async(__, { type }, { user }) => {
       const isExistEffect = _.find(user.effects, { type });
       if (isExistEffect) {
@@ -367,10 +372,67 @@ export default {
         );
       }
     },
-    
-    
-    //TODO - сделать метод покинуть команду
-    // leaveTeam: async(_, { user: { id } }) => {
-    // },
+    leaveTeam: async(_, { inkname }, { user }) => {
+      await Team.findOneAndUpdate(
+        { inkname },
+        { $pull: { membersIds: user.id } },
+        { new: true }
+      );
+      user.teamId = null;
+      await user.save();
+      return user;
+    },
+    removeTeam: async(_, { id }, { user }) => {
+      const team = await Team.findByIdAndRemove(id);
+      
+      if (team.followersIds.length) {
+        await User.bulkWrite(team.followersIds.map((id => ({
+          updateOne: {
+            filter: { '_id': id },
+            update: { $pull: { followingIds: team.id } },
+            new: true
+          }
+        }))));
+      }
+      if (team.dialogueIds.length) {
+        team.dialogueIds.forEach(async(id) => {
+          const dialogue = await Dialogue.findById(id);
+          if (dialogue.membersIds.length) {
+            await User.bulkWrite(dialogue.membersIds.map((id => ({
+              updateOne: {
+                filter: { '_id': id },
+                update: { $pull: { dialogueIds: dialogue.id } },
+                new: true
+              }
+            }))));
+          }
+          if (dialogue.messagesIds.length) {
+            await Message.deleteMany({ targetId: dialogue.id });
+          }
+        });
+      }
+      if (team.membersIds.length) {
+        await User.bulkWrite(team.membersIds.map((id => ({
+          updateOne: {
+            filter: { '_id': id },
+            update: { teamId: null },
+            new: true
+          }
+        }))));
+      }
+      if (team.tags.length) {
+        await Tag.bulkWrite(team.tags.map((tag => ({
+          updateOne: {
+            filter: { tagname: tag },
+            update: { $inc: { rating: -1 } },
+            upsert: true
+          }
+        }))));
+      }
+      await Dialogue.deleteMany({ authorId: team.id });
+      user.teamId = null;
+      await user.save();
+      return user;
+    },
   }
 };
