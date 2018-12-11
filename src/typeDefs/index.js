@@ -262,8 +262,8 @@ export default gql`
     createTeam(inkname: String!, name: String, description: DesriptionInput, email: String, avatarUrl: String, members: [String], text: String, tags: [String]): Team
     updateTeam(inkname:String, description: DesriptionInput): Team
     inviteToTeam(inkname: String!, member: String): Team
-    leaveTeam(teamId: ID!): User
-    removeTeam(teamId: ID!): User
+    leaveTeam(inkname: String!): User
+    removeTeam(id: ID!): User
     applyInvite(inkname: String, messageId: ID!): User
     removeMessage(id: ID!): Dialogue
     createMessage(receivers: [String!], text: String!): User

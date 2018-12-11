@@ -6,9 +6,9 @@ const sendInvites = async(inkname, members, text) => {
   const users = await User.find({ inkname: { $in: members } });
   const usersId = users.map(u => u.id);
   
-  usersId.map(async userID => {
+  usersId.map(async userId => {
     const dialogue = await Dialogue.create({
-      membersIds: [userID],
+      membersIds: [userId],
       authorId: team.id,
       date: Date.now(),
       messagesIds: []
@@ -31,7 +31,7 @@ const sendInvites = async(inkname, members, text) => {
     );
     
     await User.findOneAndUpdate(
-      { _id: userID },
+      { _id: userId },
       { $addToSet: { dialogueIds: dialogue.id } },
       { new: true }
     );
@@ -74,6 +74,7 @@ export default {
     
     updateTeam: async(_, { inkname, description }, { user }) => {},
     
-    inviteToTeam: async(_, { inkname, member }) => await sendInvites(inkname, [member]),
+    inviteToTeam: async(_, { inkname, member }) => await sendInvites(inkname, [member])
+    
   }
 };
