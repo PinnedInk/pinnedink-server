@@ -84,7 +84,8 @@ const TeamSchema = new Schema({
   avatarUrl: String,
   email: String,
   tags: [String],
-  dialogueIds: [ObjectId]
+  dialogueIds: [ObjectId],
+  locationId: ObjectId
 });
 
 TeamSchema.loadClass(TeamClass);

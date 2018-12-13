@@ -41,5 +41,20 @@ export default {
 
       return "Like" // typename property must be set by your mock functions
     }
+  },
+  ILocation: {
+    __resolveType(data) {
+      if (data.owner) {
+        return "Team";
+      }
+      if (data.place) {
+        return "Event";
+      }
+      if (data.archived) {
+        return "Work";
+      }
+      
+      return "User"
+    }
   }
 };

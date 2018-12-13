@@ -51,7 +51,7 @@ export default gql`
     owner: ISender @unique
   }
 
-  type User implements ISender & IUser {
+  type User implements ISender & IUser & ILocation {
     id: ID! @unique
     email: String @unique
     token: Token
@@ -74,6 +74,7 @@ export default gql`
     archivedWorks: [Work]
     effects: [Effect]
     dialogues: [Dialogue]
+    location: Location
   }
 
   type Like implements IResponsable {
@@ -120,7 +121,7 @@ export default gql`
     location: String
   }
 
-  type Team implements IUser & ISender {
+  type Team implements IUser & ISender & ILocation {
     id: ID! @unique
     thumbUrl: String
     description: Description
@@ -136,9 +137,10 @@ export default gql`
     tags: [String]
     effects: [Effect]
     dialogues: [Dialogue]
+    location: Location
   }
 
-  type Work implements IResponsable {
+  type Work implements IResponsable & ILocation {
     id: ID! @unique
     likes: [Like]
     description: String
@@ -152,48 +154,39 @@ export default gql`
     target: IResponsable
     tags: [String]
     archived: [User]
+    location: Location
   }
 
-  input SessionLocationInput {
-    lat: Float
-    lng: Float
-  }
-
-  type SessionLocation {
-    lat: Float
-    lng: Float
-  }
-
-  input SessionPlaceInput {
+  input EventPlaceInput {
     address: String
     id: String
-    location: SessionLocationInput
   }
 
-  type SessionPlace {
+  type EventPlace {
     address: String
     id: String
-    location: SessionLocation
   }
 
-  input SessionDateInput {
+  input EventDateInput {
     begin : Date
     end : Date
   }
 
-  type SessionDate {
+  type EventDate {
     begin : Date
     end : Date
   }
 
-  type Event {
+  type Event implements ILocation {
     id: ID! @unique
     title: String
     description: String
     author: ISender
-    date: SessionDate
+    date: EventDate
     authorId: String
-    place: SessionPlace
+    place: EventPlace
+    location: Location
+    name: String
   }
 
   type Tag {
@@ -230,6 +223,29 @@ export default gql`
     userUpdated(dialogueId: ID!): User
   }
 
+  interface ILocation {
+    id: ID! @unique
+    name: String
+    location: Location
+  }
+  enum LocationType {
+    Point
+  }
+  input GeoJsonInput {
+    type: LocationType
+    coordinates: [Float]
+  }
+  type GeoJson {
+    type: LocationType
+    coordinates: [Float]
+  }
+  type Location {
+    id: ID! @unique
+    holder: ILocation
+    geolocation: GeoJson
+    name: String
+  }
+
   type Query {
     verifyEmailToken(token: String!, email: String!): Boolean
     verify(provider: String!, code: String!): User
@@ -252,6 +268,7 @@ export default gql`
     filteredUsers(value: String): [User]
     dialogues: [Dialogue]
     dialogue(id: ID): Dialogue
+    markers(geolocation: GeoJsonInput): [Location]
   }
 
   type Mutation {
@@ -271,19 +288,20 @@ export default gql`
     createUser(email: String!, password: String!): User
     removeUser(id: ID!): User
     toggleEffect(type: String!): User
-    updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl:String, email: String, password: String, thumbUrl: String, tags: [String]): User
+    updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl: String, email: String, password: String, thumbUrl: String, tags: [String]): User
     addWork(url: String!, thumbUrl: String!, name: String!, description: String!, tags: [String]): User
     updateWork(id: ID, description: String, name: String, tags:[String]): Work
     removeWork(id: ID!): Work
     archiveWork(id: ID): Work
     view(id: ID!): Work
     addJob(title: String!, description: String, company: String, email: String, location: String, url: String, name: String): Job
-    addEvent(title: String!, description: String!, date: SessionDateInput!, authorId: String, place: SessionPlaceInput!): Event
+    addEvent(title: String!, description: String!, date: EventDateInput!, authorId: String, place: EventPlaceInput!): Event
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
     openDialogue(id: ID): Dialogue
     updateDialogueUsers(dialogueId: ID!, receiver:String): Dialogue
     deleteDialogue(id: ID!, authorId: ID! ): User
     addDialogMessage(dialogueId: ID, text: String): Message
+    getLocation(id: ID, geolocation: GeoJsonInput, name: String): ILocation
   }
 `;

@@ -51,7 +51,8 @@ const WorkSchema = new Schema({
   likesIds: [ObjectId],
   view: Number,
   tags: [String],
-  archivedUsersIds: [ObjectId]
+  archivedUsersIds: [ObjectId],
+  locationId: ObjectId
 });
 
 WorkSchema.loadClass(WorkClass);

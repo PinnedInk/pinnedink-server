@@ -16,6 +16,7 @@ export default {
 				description,
 				place
 			});
+
 			const user = await User.findById(authorId);
 			if (user.eventsIds) {
 				user.eventsIds.push(event.id);
