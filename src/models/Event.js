@@ -17,7 +17,6 @@ class EventClass{
 
 const EventSchema = new Schema({
   authorId: ObjectId,
-  title: String,
   description: String,
   date: Mixed,
   place: Mixed,

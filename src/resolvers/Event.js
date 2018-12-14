@@ -7,11 +7,11 @@ export default {
 		},
 	},
 	Mutation: {
-		addEvent: async(_, { title, description, date, place }, { user: { id } }) => {
+		addEvent: async(_, { name, description, date, place }, { user: { id } }) => {
 			const authorId = id;
 			const event = await Event.create({
 				authorId,
-				title,
+        name,
 				date,
 				description,
 				place

@@ -180,7 +180,6 @@ export default gql`
 
   type Event implements ILocatable {
     id: ID! @unique
-    title: String
     description: String
     author: ISender
     date: EventDate
@@ -300,7 +299,7 @@ export default gql`
     archiveWork(id: ID): Work
     view(id: ID!): Work
     addJob(title: String!, description: String, company: String, email: String, location: String, url: String, name: String): Job
-    addEvent(title: String!, description: String!, date: EventDateInput!, authorId: String, place: EventPlaceInput!): Event
+    addEvent(name: String!, description: String!, date: EventDateInput!, authorId: String, place: EventPlaceInput!): Event
     validateUserName(inkname:String): User
     sendVerifyEmail(email:String!): Boolean
     openDialogue(id: ID): Dialogue
