@@ -48,8 +48,10 @@ const LocationSchema = new Schema({
     },
     coordinates: [Number]
   },
-  name: String,
-  category: String
+  category: {
+    type: String,
+    enum: ['User', 'Team', 'Event', 'Work']
+  }
 });
 
 LocationSchema.loadClass(LocationClass);

@@ -230,9 +230,14 @@ export default gql`
     location: Location
     inkname: String
   }
-  
   enum LocationType {
     Point
+  }
+  enum CategoryType {
+    User
+    Team
+    Work
+    Event
   }
   input GeoJsonInput {
     type: LocationType
@@ -246,8 +251,7 @@ export default gql`
     id: ID! @unique
     holder: ILocatable
     geolocation: GeoJson
-    name: String
-    category: String
+    category: CategoryType
   }
 
   type Query {
@@ -306,6 +310,7 @@ export default gql`
     updateDialogueUsers(dialogueId: ID!, receiver:String): Dialogue
     deleteDialogue(id: ID!, authorId: ID! ): User
     addDialogMessage(dialogueId: ID, text: String): Message
-    getLocation(id: ID, geolocation: GeoJsonInput, name: String): ILocatable
+    getLocation(id: ID, geolocation: GeoJsonInput, category: String): ILocatable
+    updateUserLocation(geolocation: GeoJsonInput, category: String): User
   }
 `;
