@@ -21,7 +21,8 @@ const EventSchema = new Schema({
   description: String,
   date: Mixed,
   place: Mixed,
-  locationId: ObjectId
+  locationId: ObjectId,
+  name: String
 });
 
 EventSchema.loadClass(EventClass);

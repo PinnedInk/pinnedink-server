@@ -1,10 +1,10 @@
 import { User, Work, Team, Location, Event } from '../models';
+const NEAR_SPHERE_DISTANCE = 10000;
+
 export default {
   Query: {
     markers: async(_, { geolocation }) => {
-      const NEAR_SPHERE_DISTANCE = process.env.NEAR_SPHERE_DISTANCE;
-      
-      if (geolocation.coordinates){
+      if (geolocation.coordinates) {
         return await Location.find({ geolocation: { $nearSphere: { $geometry: geolocation , $maxDistance: NEAR_SPHERE_DISTANCE } } });
       }
     },
@@ -12,7 +12,7 @@ export default {
   },
   Mutation: {
     getLocation: async(err, { id, geolocation, name }, { user }) => {
-
+      
       const location = await Location.create({
         holderId: id,
         geolocation,

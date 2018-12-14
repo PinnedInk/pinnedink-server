@@ -51,7 +51,7 @@ export default gql`
     owner: ISender @unique
   }
 
-  type User implements ISender & IUser & ILocation {
+  type User implements ISender & IUser & ILocatable {
     id: ID! @unique
     email: String @unique
     token: Token
@@ -121,7 +121,7 @@ export default gql`
     location: String
   }
 
-  type Team implements IUser & ISender & ILocation {
+  type Team implements IUser & ISender & ILocatable {
     id: ID! @unique
     thumbUrl: String
     description: Description
@@ -140,7 +140,7 @@ export default gql`
     location: Location
   }
 
-  type Work implements IResponsable & ILocation {
+  type Work implements IResponsable & ILocatable {
     id: ID! @unique
     likes: [Like]
     description: String
@@ -155,6 +155,7 @@ export default gql`
     tags: [String]
     archived: [User]
     location: Location
+    inkname: String
   }
 
   input EventPlaceInput {
@@ -177,7 +178,7 @@ export default gql`
     end : Date
   }
 
-  type Event implements ILocation {
+  type Event implements ILocatable {
     id: ID! @unique
     title: String
     description: String
@@ -187,6 +188,7 @@ export default gql`
     place: EventPlace
     location: Location
     name: String
+    inkname: String
   }
 
   type Tag {
@@ -223,11 +225,13 @@ export default gql`
     userUpdated(dialogueId: ID!): User
   }
 
-  interface ILocation {
+  interface ILocatable {
     id: ID! @unique
     name: String
     location: Location
+    inkname: String
   }
+  
   enum LocationType {
     Point
   }
@@ -241,9 +245,10 @@ export default gql`
   }
   type Location {
     id: ID! @unique
-    holder: ILocation
+    holder: ILocatable
     geolocation: GeoJson
     name: String
+    category: String
   }
 
   type Query {
@@ -302,6 +307,6 @@ export default gql`
     updateDialogueUsers(dialogueId: ID!, receiver:String): Dialogue
     deleteDialogue(id: ID!, authorId: ID! ): User
     addDialogMessage(dialogueId: ID, text: String): Message
-    getLocation(id: ID, geolocation: GeoJsonInput, name: String): ILocation
+    getLocation(id: ID, geolocation: GeoJsonInput, name: String): ILocatable
   }
 `;

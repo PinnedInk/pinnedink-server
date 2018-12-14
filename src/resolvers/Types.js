@@ -42,7 +42,7 @@ export default {
       return "Like" // typename property must be set by your mock functions
     }
   },
-  ILocation: {
+  ILocatable: {
     __resolveType(data) {
       if (data.owner) {
         return "Team";

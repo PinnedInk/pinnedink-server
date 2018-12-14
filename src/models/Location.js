@@ -46,13 +46,10 @@ const LocationSchema = new Schema({
       enum: ['Point'],
       default: 'Point'
     },
-    coordinates: {
-      type: [Number],
-      default: [46.484395, 30.735015],
-      required: true
-    }
+    coordinates: [Number]
   },
-  name: String
+  name: String,
+  category: String
 });
 
 LocationSchema.loadClass(LocationClass);
