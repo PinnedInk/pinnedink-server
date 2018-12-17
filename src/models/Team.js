@@ -7,7 +7,7 @@ import Dialogue from './Dialogue';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class TeamClass{
+class TeamClass {
   static getByName(inkname) {
     return Team.findOne({
       inkname
@@ -84,7 +84,8 @@ const TeamSchema = new Schema({
   avatarUrl: String,
   email: String,
   tags: [String],
-  dialogueIds: [ObjectId]
+  dialogueIds: [ObjectId],
+  locationId: ObjectId
 });
 
 TeamSchema.loadClass(TeamClass);

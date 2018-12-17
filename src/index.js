@@ -8,7 +8,7 @@ import passport from 'passport';
 import { ApolloServer, graphiqlExpress, makeExecutableSchema } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import _ from 'lodash';
-import { Comment, Like, Types, Message, User, Work, Job, Event, Team, Tag, Dialogue } from './resolvers';
+import { Comment, Like, Types, Message, User, Work, Job, Event, Team, Tag, Dialogue, Location } from './resolvers';
 import typeDefs from './typeDefs';
 
 import googleAuth from './auth/google';
@@ -60,7 +60,7 @@ const initServer = async() => {
   
   const server = new ApolloServer({
     typeDefs,
-    resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue),
+    resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location),
     context: async({ req }) => {
       const tokenKey = getToken(req);
       if (tokenKey) {
@@ -101,7 +101,7 @@ ws.listen(PORT, () => {
   new SubscriptionServer({
     execute,
     subscribe,
-    schema: makeExecutableSchema({ typeDefs, resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue) })
+    schema: makeExecutableSchema({ typeDefs, resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location) })
   }, {
     server: ws,
     path: '/subscriptions',

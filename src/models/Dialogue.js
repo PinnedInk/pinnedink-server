@@ -6,7 +6,7 @@ import Message from './Message';
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-class DialogueClass{
+class DialogueClass {
   
   static async getList(list) {
     return Dialogue.find({
@@ -16,12 +16,9 @@ class DialogueClass{
   
   get author() {
     const getAuthor = async(authorId) => {
-      let isExistAuthor;
-      let author = await User.findOne({ '_id': authorId }, (err, author) => {
-        isExistAuthor = author;
-      });
-      if (!isExistAuthor) {
-        return await Team.findOne({ '_id': authorId });
+      let author = await User.findById(authorId);
+      if (!author) {
+        return await Team.findById(authorId);
       }
       return author;
     };

@@ -6,7 +6,7 @@ import Dialogue from './Dialogue';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class MessageClass{
+class MessageClass {
   
   static async getList(list) {
     return Message.find({

@@ -4,7 +4,7 @@ import User from './User';
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
-class JobClass{
+class JobClass {
 	get author() {
 		const uid = this.authorId;
 		return User.findById(uid);

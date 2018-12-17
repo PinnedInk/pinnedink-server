@@ -7,6 +7,7 @@ import Team from './Team';
 import Like from './Like';
 import Message from './Message';
 import Dialogue from './Dialogue';
+import Location from './Location';
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -53,6 +54,10 @@ class UserClass {
   
   get team() {
     return Team.findById(this.teamId);
+  }
+  
+  get location() {
+    return Location.findById(this.locationId);
   }
   
   get dialogues() {
@@ -156,7 +161,8 @@ const UserSchema = new Schema({
   teamId: ObjectId,
   archivedWorksIds: [ObjectId],
   effects: [EffectSchema],
-  dialogueIds: [ObjectId]
+  dialogueIds: [ObjectId],
+  locationId: ObjectId
 });
 
 UserSchema.loadClass(UserClass);
