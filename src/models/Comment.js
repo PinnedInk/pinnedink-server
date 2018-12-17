@@ -5,7 +5,7 @@ import Like from './Like';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class CommentClass{
+class CommentClass {
   get author() {
     const authorId = this.authorId;
     return User.findById(authorId);

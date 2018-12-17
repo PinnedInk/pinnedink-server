@@ -20,7 +20,7 @@ export default {
   },
   Mutation: {
     getLocation: async(err, { id, geolocation, category }, { user }) => {
-      
+
       const location = await Location.create({
         holderId: id,
         geolocation,

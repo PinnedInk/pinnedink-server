@@ -5,7 +5,7 @@ import Location from './Location';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class EventClass{
+class EventClass {
   get author() {
     return User.findById(this.authorId);
   }

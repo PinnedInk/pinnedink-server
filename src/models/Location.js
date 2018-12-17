@@ -11,26 +11,17 @@ class LocationClass{
   
   get holder() {
     const getHolder = async(holderId) => {
-      let isExistHolder = {};
-      let author = await User.findById({ '_id': holderId }, (err, holder) => {
-        isExistHolder = holder;
-      });
-      if (!isExistHolder) {
-        await Team.findById({ '_id': holderId }, (err, holder) => {
-          isExistHolder = holder;
-        });
+      let author = await User.findById(holderId);
+      if (!author) {
+        author = await Team.findById(holderId);
       }
-      if (!isExistHolder) {
-        await Work.findById({ '_id': holderId }, (err, holder) => {
-          isExistHolder = holder;
-        });
+      if (!author) {
+        author = await Work.findById(holderId);
       }
-      if (!isExistHolder) {
-        await Event.findById({ '_id': holderId }, (err, holder) => {
-          isExistHolder = holder;
-        });
+      if (!author) {
+        return await Event.findById(holderId);
       }
-      return isExistHolder;
+      return author;
     };
     
     return getHolder(this.holderId);

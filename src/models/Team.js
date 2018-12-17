@@ -7,7 +7,7 @@ import Dialogue from './Dialogue';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class TeamClass{
+class TeamClass {
   static getByName(inkname) {
     return Team.findOne({
       inkname

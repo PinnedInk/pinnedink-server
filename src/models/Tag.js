@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class TagClass{
+class TagClass {
   
   static async getList(list) {
     return Tag.find({
