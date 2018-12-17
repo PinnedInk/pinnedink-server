@@ -155,7 +155,6 @@ export default gql`
     tags: [String]
     archived: [User]
     location: Location
-    inkname: String
   }
 
   input EventPlaceInput {
@@ -187,7 +186,6 @@ export default gql`
     place: EventPlace
     location: Location
     name: String
-    inkname: String
   }
 
   type Tag {
@@ -228,7 +226,6 @@ export default gql`
     id: ID! @unique
     name: String
     location: Location
-    inkname: String
   }
   enum LocationType {
     Point
