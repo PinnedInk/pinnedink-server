@@ -21,9 +21,10 @@ class LocationClass{
       if (!author) {
         return await Event.findById(holderId);
       }
+
       return author;
     };
-    
+
     return getHolder(this.holderId);
   }
   
@@ -44,6 +45,8 @@ const LocationSchema = new Schema({
     enum: ['User', 'Team', 'Event', 'Work']
   }
 });
+
+LocationSchema.index({ "geolocation": "2dsphere" });
 
 LocationSchema.loadClass(LocationClass);
 const Location = mongoose.model('Location', LocationSchema);
