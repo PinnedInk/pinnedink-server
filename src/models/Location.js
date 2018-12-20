@@ -7,7 +7,7 @@ import Event from './Event';
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
 
-class LocationClass{
+class LocationClass {
   
   get holder() {
     const getHolder = async(holderId) => {
@@ -21,10 +21,10 @@ class LocationClass{
       if (!author) {
         return await Event.findById(holderId);
       }
-
+      
       return author;
     };
-
+    
     return getHolder(this.holderId);
   }
   
@@ -38,15 +38,16 @@ const LocationSchema = new Schema({
       enum: ['Point'],
       default: 'Point'
     },
-    coordinates: [Number]
+    coordinates: {
+      type: [Number],
+      index: '2dsphere'
+    }
   },
   category: {
     type: String,
     enum: ['User', 'Team', 'Event', 'Work']
   }
 });
-
-LocationSchema.index({ "geolocation": "2dsphere" });
 
 LocationSchema.loadClass(LocationClass);
 const Location = mongoose.model('Location', LocationSchema);
