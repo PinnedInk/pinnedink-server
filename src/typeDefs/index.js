@@ -273,7 +273,7 @@ export default gql`
     filteredUsers(value: String): [User]
     dialogues: [Dialogue]
     dialogue(id: ID): Dialogue
-    markers(geolocation: GeoJsonInput): [Location]
+    markers(geolocation: GeoJsonInput, category: [String]): [Location]
   }
 
   type Mutation {
