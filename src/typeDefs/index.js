@@ -249,6 +249,7 @@ export default gql`
     holder: ILocatable
     geolocation: GeoJson
     category: CategoryType
+    name: String
   }
 
   type Query {
@@ -273,7 +274,7 @@ export default gql`
     filteredUsers(value: String): [User]
     dialogues: [Dialogue]
     dialogue(id: ID): Dialogue
-    markers(geolocation: GeoJsonInput, category: [String]): [Location]
+    markers(geolocation: GeoJsonInput, categories: [String]): [Location]
   }
 
   type Mutation {
@@ -307,7 +308,7 @@ export default gql`
     updateDialogueUsers(dialogueId: ID!, receiver:String): Dialogue
     deleteDialogue(id: ID!, authorId: ID! ): User
     addDialogMessage(dialogueId: ID, text: String): Message
-    getLocation(id: ID, geolocation: GeoJsonInput, category: String): ILocatable
-    updateUserLocation(geolocation: GeoJsonInput, category: String): User
+    getLocation(id: ID, geolocation: GeoJsonInput, category: String, name: String): ILocatable
+    updateUserLocation(geolocation: GeoJsonInput, category: String, name: String): User
   }
 `;

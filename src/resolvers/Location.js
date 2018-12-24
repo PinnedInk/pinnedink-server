@@ -4,7 +4,7 @@ const NEAR_SPHERE_DISTANCE = 10000;
 
 export default {
   Query: {
-    markers: async(_, { geolocation, category }) => {
+    markers: async(_, { geolocation, categories }) => {
       if (geolocation.coordinates) {
         return await Location.find({
           geolocation: {
@@ -13,18 +13,19 @@ export default {
               $maxDistance: NEAR_SPHERE_DISTANCE
             }
           },
-          category
+          category: categories
         });
       }
     },
   },
   Mutation: {
-    getLocation: async(err, { id, geolocation, category }, { user }) => {
+    getLocation: async(err, { id, geolocation, category, name }, { user }) => {
       
       const location = await Location.create({
         holderId: id,
         geolocation,
-        category
+        category,
+        name
       });
       
       let target = await User.findByIdAndUpdate(id, { 'locationId': location.id }, { new: true });
@@ -40,42 +41,23 @@ export default {
       
       return target;
     },
-    updateUserLocation: async(err, { geolocation, category }, { user }) => {
+    updateUserLocation: async(err, { geolocation, category, name }, { user }) => {
       let location;
       if (user.locationId) {
         await Location.findOneAndUpdate(
           { _id: user.locationId },
-          { holderId: user.id, geolocation, category },
+          { holderId: user.id, geolocation, category, name },
           { new: true });
         return user;
       } else {
         location = await Location.create({
           holderId: user.id,
           geolocation,
-          category
+          category,
+          name
         });
         return await User.findByIdAndUpdate(user.id, { 'locationId': location.id }, { new: true });
       }
     }
   }
 };
-
-
-// markers: async(_, { geolocation }) => {
-//   if (geolocation.coordinates) {
-// let loc = await Location.aggregate([
-//   {
-//     $geoNear: {
-//       near: geolocation,
-//       distanceField: 'distance',
-//       maxDistance: NEAR_SPHERE_DISTANCE,
-//       query: { category: 'User' },
-//       key: 'geolocation',
-//       spherical: true,
-//     }
-//   },
-//   { $project: { id: "$_id", geolocation: 1, category: 1, holderId: 1 } }
-// ])
-//   .then(function (res) {
-//     return res;
-// });

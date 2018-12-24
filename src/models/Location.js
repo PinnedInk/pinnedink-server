@@ -21,13 +21,11 @@ class LocationClass {
       if (!author) {
         return await Event.findById(holderId);
       }
-      
       return author;
     };
     
     return getHolder(this.holderId);
   }
-  
 }
 
 const LocationSchema = new Schema({
@@ -46,7 +44,8 @@ const LocationSchema = new Schema({
   category: {
     type: String,
     enum: ['User', 'Team', 'Event', 'Work']
-  }
+  },
+  name: String
 });
 
 LocationSchema.loadClass(LocationClass);
