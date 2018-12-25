@@ -35,7 +35,7 @@ app.use(express.json());
 
 const initServer = async() => {
   try {
-    await mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, autoIndex: false });
+    await mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useCreateIndex: true });
   } catch (e) {
     console.warn('Handled MongoDB Error, restarting in 5sec');
     return setTimeout(initServer, 5000);
