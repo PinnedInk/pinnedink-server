@@ -48,6 +48,7 @@ const LocationSchema = new Schema({
   name: String
 });
 
+LocationSchema.index({ geolocation: '2dsphere' });
 LocationSchema.loadClass(LocationClass);
 const Location = mongoose.model('Location', LocationSchema);
 export default Location;

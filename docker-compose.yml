@@ -1,0 +1,40 @@
+version: '3'
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  server:
+    container_name: server
+    image: 'onestromberg/inkwell-server'
+    links:
+      - "mongodb:mongodb"
+    ports:
+      - "80:4000"
+      - "443:4000"
+    networks: 
+      - backend
+  mongodb:
+    container_name: mongodb
+    image: 'mongo'
+    command: mongod --storageEngine=wiredTiger --bind_ip_all
+    volumes:
+      - ./data:/data/mongodb
+    networks: 
+      - backend
+    expose: 
+      - "27017"
+    ports:
+      - "27017:27017"
+  # api:
+  #   container_name: api
+  #   build:
+  #     context: ./api
+  #   command: ["/wait-for-it.sh", "mongodb:27017", "--", "node"]
+  #   ports:
+  #     - "8020:3001"
+  #   links:
+  #     - "mongodb"
+  #   networks: 
+  #     - backend

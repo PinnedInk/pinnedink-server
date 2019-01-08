@@ -4,11 +4,11 @@
   "description": "Inlwell NodeJs Server",
   "main": "index.js",
   "scripts": {
-    "connect:ec2": "ssh -i 'inkwell.pem' ec2-user@ec2-54-164-0-164.compute-1.amazonaws.com",
+    "connect:ec2": "ssh -i 'inkwell.pem' ec2-user@ec2-54-146-34-251.compute-1.amazonaws.com",
     "build-docker": "docker build -t onestromberg/inkwell-server .",
     "start": "node lib",
     "start:dev": "babel-node src/index.js",
-    "update:server": "ssh -i 'inkwell.pem' ec2-user@ec2-18-205-194-28.compute-1.amazonaws.com 'docker-compose pull server && docker-compose up -d server'",
+    "update:server": "ssh -i 'inkwell.pem' ec2-user@ec2-54-146-34-251.compute-1.amazonaws.com 'docker-compose pull server && docker-compose up -d server'",
     "build": "babel ./src -d ./lib && npm run build-docker && docker push onestromberg/inkwell-server && npm run update:server",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec babel-node src/index.js"
