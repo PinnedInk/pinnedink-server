@@ -4,20 +4,15 @@ import express from 'express';
 import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
-import passport from 'passport';
-import { ApolloServer, graphiqlExpress, makeExecutableSchema } from 'apollo-server-express';
 import mongoose from 'mongoose';
-import _ from 'lodash';
-import { Comment, Like, Types, Message, User, Work, Job, Event, Team, Tag, Dialogue, Location } from './resolvers';
-import typeDefs from './typeDefs';
-
-import googleAuth from './auth/google';
-import facebookAuth from './auth/facebook';
-
-
+import { ApolloServer } from 'apollo-server-express';
 import { createServer } from 'http';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
+
+import schema from './schema';
+import googleAuth from './auth/google';
+import facebookAuth from './auth/facebook';
 import { Token } from './models';
 
 console.log('Starting server for env:', process.env.NODE_ENV);
@@ -58,8 +53,7 @@ const initServer = async() => {
   };
   
   const server = new ApolloServer({
-    typeDefs,
-    resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location),
+    schema,
     context: async({ req }) => {
       const tokenKey = getToken(req);
       if (tokenKey) {
@@ -100,7 +94,7 @@ ws.listen(PORT, () => {
   new SubscriptionServer({
     execute,
     subscribe,
-    schema: makeExecutableSchema({ typeDefs, resolvers: _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location) })
+    schema
   }, {
     server: ws,
     path: '/subscriptions',

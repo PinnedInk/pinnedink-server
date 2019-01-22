@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import Comment from './Comment';
 import Like from './Like';
 import Types from './Types';
@@ -11,4 +13,6 @@ import Tag from './Tag';
 import Dialogue from './Dialogue';
 import Location from './Location';
 
-export { Comment, Like, Types, User, Work, Team, Job, Event, Message, Tag, Dialogue, Location }
+const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location);
+
+export default resolvers;
