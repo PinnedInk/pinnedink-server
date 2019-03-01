@@ -10,5 +10,6 @@ import Event from './Event';
 import Tag from './Tag';
 import Dialogue from './Dialogue';
 import Location from './Location';
+import Business from './Business';
 
-export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location }
+export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business }

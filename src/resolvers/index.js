@@ -12,7 +12,8 @@ import Message from './Message';
 import Tag from './Tag';
 import Dialogue from './Dialogue';
 import Location from './Location';
+import Business from './Business';
 
-const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location);
+const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location, Business);
 
 export default resolvers;

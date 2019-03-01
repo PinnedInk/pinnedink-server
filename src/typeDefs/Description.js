@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server';
 
 const Description = gql`
-
   input DesriptionInput {
     bio: String
     site: String

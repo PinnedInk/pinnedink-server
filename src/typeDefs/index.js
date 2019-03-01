@@ -15,5 +15,7 @@ import Team from './Team';
 import Token from './Token';
 import User from './User';
 import Work from './Work';
+import Business from './Business';
+import WorkingHours from './WorkingHours';
 
-export default [IUser, ISender, IResponsable, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work];
+export default [IUser, ISender, IResponsable, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, WorkingHours];
