@@ -1,6 +1,7 @@
 import IUser from './IUser';
 import ISender from './ISender';
 import IResponsable from './IResponsable';
+import IUserV from './IUserV';
 import Description from './Description';
 import Message from './Message';
 import Comment from './Comment';
@@ -18,4 +19,4 @@ import Work from './Work';
 import Business from './Business';
 import WorkingHours from './WorkingHours';
 
-export default [IUser, ISender, IResponsable, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, WorkingHours];
+export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, WorkingHours ];

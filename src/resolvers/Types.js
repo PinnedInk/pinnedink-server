@@ -56,5 +56,10 @@ export default {
       
       return "User"
     }
+  },
+  IUserV: {
+    __resolveType(data) {
+      return "Business"
+    }
   }
 };
