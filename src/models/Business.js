@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt-nodejs';
 
 import Token from './Token';
-import Location from './Location';
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -24,11 +23,7 @@ class BusinessClass {
     const tokenId = this.tokenId;
     return Token.findById(tokenId);
   }
-  
-  // get location() {
-  //   return Location.findById(this.locationId);
-  // }
-  
+ 
   static generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
   }
@@ -41,7 +36,6 @@ class BusinessClass {
 }
 
 const BusinessSchema = new Schema({
-  id: String,
   tokenId: ObjectId,
   name: String,
   companyName: String,
@@ -54,25 +48,3 @@ const BusinessSchema = new Schema({
 BusinessSchema.loadClass(BusinessClass);
 const Business = mongoose.model('Business', BusinessSchema);
 export default Business;
-
-
-// const BusinessSchema = new Schema({
-//   tokenId: ObjectId,
-//   name: String,
-//   companyName: String,
-//   email: String,
-//   password: String,
-//   phoneNumber: String,
-//   avatarUrl: String,
-//   branchName: String,
-//   category: String,
-//   country: String,
-//   postcode: String,
-//   branchPhone: String,
-//   siteUrl: String,
-//   workihgHours: {
-//     begin : Date,
-//     end : Date
-//   },
-//   locationId: ObjectId
-// });

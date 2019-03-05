@@ -1,11 +1,8 @@
-import _ from 'lodash';
 import jwt from 'jsonwebtoken';
 import request from 'request';
-import { User, Business, Token, Team, Message, Like, Comment, Event, Job, Work, Dialogue, Tag } from '../models';
+import { Business, Token } from '../models';
 import { google } from 'googleapis';
 import { FB } from 'fb';
-import { removeIds, createTag } from '../utils';
-import moment from 'moment';
 
 
 const sendVerificationMail = async(email) => {
@@ -32,71 +29,11 @@ const sendVerificationMail = async(email) => {
   ));
 };
 
-const verifyGoogleProvider = async(values, token, user) => {
-  const { code } = values;
-  const CLIENT_ID = process.env.Google_clientID;
-  const CLIENT_SECRET = process.env.Google_clientSecret;
-  const SITE_URL = process.env.SITE_URL;
-  const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, `${SITE_URL}/auth/google`);
-  let email, avatarUrl, thumbUrl, name;
-  const { tokens } = await oauth2Client.getToken(code);
-  const ticket = await oauth2Client.verifyIdToken({ idToken: tokens['id_token'], audience: CLIENT_ID });
-  //console.log('ticket', ticket);
-  const payload = ticket.getPayload();
-  avatarUrl = payload.picture + '?sz=400';
-  thumbUrl = payload.picture + '?sz=200';
-  name = payload.name;
-  email = payload.email;
-  try {
-    return updateUser({ email, name, thumbUrl, avatarUrl }, 'google');
-  } catch (err) {
-    console.log(err);
-  }
-  
-  return null;
-};
-
-const verifyFacebookProvider = async(values, token, user) => {
-  const { code } = values;
-  const CLIENT_ID = process.env.FACEBOOK_APP_ID;
-  const CLIENT_SECRET = process.env.FACEBOOK_APP_SECRET;
-  const SITE_URL = process.env.SITE_URL;
-  const { access_token: accessToken } = await FB.api('oauth/access_token', {
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    redirect_uri: `${SITE_URL}/auth/facebook`,
-    code: code
-  });
-  
-  // console.log('accessToken', accessToken);
-  return new Promise(resolve => {
-    FB.api('me', { fields: ['name', 'email', 'picture'], access_token: accessToken }, async(payload) => {
-      var email = payload.email,
-        name = payload.name,
-        thumbUrl = payload.picture.data.url,
-        avatarUrl = payload.picture.data.url;
-      try {
-        console.log('payload.picture.data.url', payload.picture.data.url);
-        resolve(await updateUser({ email, name, thumbUrl, avatarUrl }, 'facebook'));
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-};
-
-const verifyTwitterProvider = async(values, token, user) => {
-  const { code } = values;
-  const CLIENT_ID = process.env.TWITTER_APP_ID;
-  const CLIENT_SECRET = process.env.TWITTER_APP_SECRET;
-  console.log('twitter', values, token, user);
-};
-
 export default {
   Query: {
-    currentUser: async(_, values, { token, user }) => {
-      if (token && user) {
-        return user;
+    currentUser: async(_, values, { token, business }) => {
+      if (token && business) {
+        return business;
       }
       return null;
     },
@@ -171,7 +108,7 @@ export default {
       } else {
         return new Error('Token missing');
       }
-
+      
       if (user) {
         user.tokenId = null;
         user.save();
@@ -180,18 +117,17 @@ export default {
         return new Error('User missing');
       }
     },
-    addNewBusiness: async(err, { companyName, name, phoneNumber, email, password}, { business, token }) => {
+    addNewBusiness: async(err, { companyName, name, phoneNumber, email, password }, { business, token }) => {
       if (business) {
         return new Error(`Should be not-authorized to create business`);
       }
-
       let existingBusiness = await Business.findOne({ email });
       if (!existingBusiness || existingBusiness == null) {
         password = Business.generateHash(password);
         const sessionSecret = process.env.SESSION_SECRET;
         try {
-          const business = await Business.create({ email, password, companyName, name, phoneNumber });
-          await sendVerificationMail(email);
+          business = await Business.create({ email, password, companyName, name, phoneNumber });
+          // await sendVerificationMail(email);
         } catch (e) {
           return new Error('Sending mail generated error');
         } finally {

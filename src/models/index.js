@@ -11,5 +11,6 @@ import Tag from './Tag';
 import Dialogue from './Dialogue';
 import Location from './Location';
 import Business from './Business';
+import Branch from './Branch';
 
-export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business }
+export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business, Branch }

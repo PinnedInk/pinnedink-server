@@ -1,4 +1,4 @@
-import { User, Work, Team, Location, Event } from '../models';
+import { Location, Branch } from '../models';
 
 const NEAR_SPHERE_DISTANCE = 10000;
 
@@ -19,7 +19,7 @@ export default {
     },
   },
   Mutation: {
-    getLocation: async(err, { id, geolocation, category, name }, { user }) => {
+    getLocation: async(err, { id, geolocation, category, name }) => {
       
       const location = await Location.create({
         holderId: id,
@@ -28,36 +28,26 @@ export default {
         name
       });
       
-      let target = await User.findByIdAndUpdate(id, { 'locationId': location.id }, { new: true });
-      if (!target) {
-        target = await Team.findByIdAndUpdate(id, { 'locationId': location.id }, { new: true });
-      }
-      if (!target) {
-        target = await Work.findByIdAndUpdate(id, { 'locationId': location.id }, { new: true });
-      }
-      if (!target) {
-        target = await Event.findByIdAndUpdate(id, { 'locationId': location.id }, { new: true });
-      }
-      
+      let target = await Branch.findByIdAndUpdate(id, { 'locationId': location.id }, { new: true });
       return target;
     },
-    updateUserLocation: async(err, { geolocation, category, name }, { user }) => {
-      let location;
-      if (user.locationId) {
-        await Location.findOneAndUpdate(
-          { _id: user.locationId },
-          { holderId: user.id, geolocation, category, name },
-          { new: true });
-        return user;
-      } else {
-        location = await Location.create({
-          holderId: user.id,
-          geolocation,
-          category,
-          name
-        });
-        return await User.findByIdAndUpdate(user.id, { 'locationId': location.id }, { new: true });
-      }
-    }
+    // updateUserLocation: async(err, { geolocation, category, name }, { user }) => {
+    //   let location;
+    //   if (user.locationId) {
+    //     await Location.findOneAndUpdate(
+    //       { _id: user.locationId },
+    //       { holderId: user.id, geolocation, category, name },
+    //       { new: true });
+    //     return user;
+    //   } else {
+    //     location = await Location.create({
+    //       holderId: user.id,
+    //       geolocation,
+    //       category,
+    //       name
+    //     });
+    //     return await User.findByIdAndUpdate(user.id, { 'locationId': location.id }, { new: true });
+    //   }
+    // }
   }
 };

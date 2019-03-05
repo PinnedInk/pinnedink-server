@@ -66,10 +66,9 @@ const initServer = async() => {
             verifiedToken = null;
           }
           if (verifiedToken) {
-            const user = await token.owner;
-            // console.log('token user', user.id, decoded, decoded.authId);
-            if (user && verifiedToken.authId == user.id) {
-              return { token, user };
+            const business = await token.owner;
+            if (business && verifiedToken.authId == business.id) {
+              return { token, business };
             }
           }
           return { token };

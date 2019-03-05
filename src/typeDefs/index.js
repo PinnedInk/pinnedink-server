@@ -17,6 +17,6 @@ import Token from './Token';
 import User from './User';
 import Work from './Work';
 import Business from './Business';
-import WorkingHours from './WorkingHours';
+import Branch from './Branch';
 
-export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, WorkingHours ];
+export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, Branch];
