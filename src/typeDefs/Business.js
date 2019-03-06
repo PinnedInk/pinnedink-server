@@ -14,10 +14,8 @@ const Business = gql`
   }
 
   extend type Query {
-    user(id: String, email: String): IUserV
-    #    users: [User]
+    user(id: ID!, email: String): IUserV
     currentUser: IUserV
-    #    filteredUsers(value: String): [User]
     verify(provider: String!, code: String!): IUserV
   }
 
