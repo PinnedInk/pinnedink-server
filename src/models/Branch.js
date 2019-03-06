@@ -19,7 +19,7 @@ class BranchClass {
 const BranchSchema = new Schema({
   authorId: ObjectId,
   branchName: String,
-  category: String,
+  categories: [String],
   country: String,
   postcode: String,
   branchPhone: String,

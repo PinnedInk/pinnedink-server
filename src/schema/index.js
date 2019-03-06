@@ -21,9 +21,6 @@ const schema = [baseSchema, ...typeDefs];
 const options = {
   typeDefs: schema,
   resolvers
-  // resolverValidationOptions: {
-  //   requireResolversForResolveType: false
-  // },
 };
 
 export default makeExecutableSchema(options);

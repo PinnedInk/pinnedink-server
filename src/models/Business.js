@@ -43,6 +43,7 @@ const BusinessSchema = new Schema({
   password: String,
   phoneNumber: String,
   avatarUrl: String,
+  serviceIds: [ObjectId]
 });
 
 BusinessSchema.loadClass(BusinessClass);

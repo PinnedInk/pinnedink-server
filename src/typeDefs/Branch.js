@@ -16,7 +16,7 @@ const Branch = gql`
     author: IUserV
     authorId: ID
     branchName: String
-    category: String
+    categories: [String]
     country: String
     postcode: String
     branchPhone: String
@@ -31,7 +31,7 @@ const Branch = gql`
   #  }
 
   extend type Mutation {
-    addBranch(authorId: ID, branchName: String, branchPhone: String, category: String, country: String, postcode: String, siteUrl: String, avatarUrl: String, date: WorkingHoursInput): Branch
+    addBranch(authorId: ID, branchName: String, branchPhone: String, categories: [String], country: String, postcode: String, siteUrl: String, avatarUrl: String, date: WorkingHoursInput): Branch
   }
 `;
 

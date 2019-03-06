@@ -18,5 +18,8 @@ import User from './User';
 import Work from './Work';
 import Business from './Business';
 import Branch from './Branch';
+import Category from './Category';
+import Subcategory from './Subcategory';
+import Service from './Service';
 
-export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, Branch];
+export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, Branch, Category, Subcategory, Service];

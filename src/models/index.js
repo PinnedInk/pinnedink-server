@@ -12,5 +12,8 @@ import Dialogue from './Dialogue';
 import Location from './Location';
 import Business from './Business';
 import Branch from './Branch';
+import Category from './Category';
+import Subcategory from './Subcategory';
+import Service from './Service';
 
-export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business, Branch }
+export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service }
