@@ -16,24 +16,31 @@ export const removeIds = async(obj, id, prop) => {
   await obj.save()
 };
 
-export const createTag = async (items, target, model, type) => {
+export const createTag = async (items, target, model, type, ids) => {
+  let elementsIsds = null;
   if (!items || !target || !model) {
     return null;
   }
   if (items.length){
-    await model.bulkWrite(items.map(((item, i) => ({
+    const generateElements = await model.bulkWrite(items.map(((item, i) => ({
       updateOne : {
-        filter: { tagname: item },
+        filter: { [type]: item },
         update: { $inc: { rating: 1 } },
         upsert: true
       }
     }))));
+    elementsIsds = generateElements.upsertedIds;
   }
-  
-  if (target) {
-    target[type] = items;
-    await target.save();
+ 
+  for (let prop in elementsIsds) {
+    if (target[ids]) {
+      target[ids].push(elementsIsds[prop]);
+    } else {
+      target[ids] = [elementsIsds[prop]];
+    }
   }
+  // await target.findOneAndUpdate({ '_id': target.id }, {categories: categories}, { new: true });
+  await target.save();
 };
 
 // export const createCategory = async (categories, target) => {

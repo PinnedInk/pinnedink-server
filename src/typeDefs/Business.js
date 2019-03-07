@@ -11,6 +11,7 @@ const Business = gql`
     phoneNumber: String
     thumbUrl: String
     avatarUrl: String
+    services:[Service]
   }
 
   extend type Query {

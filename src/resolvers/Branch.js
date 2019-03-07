@@ -1,5 +1,5 @@
-import { Branch, Business } from '../models';
-import { createCategory } from '../utils';
+import { Branch, Business, Category } from '../models';
+import { createCategory, createTag } from '../utils';
 
 export default {
   // Query: {
@@ -19,9 +19,8 @@ export default {
         authorId,
         branchPhone
       });
-  
       if (categories) {
-        await createCategory(categories, branch);
+        await createTag(categories, branch, Category, 'categoryname', 'categoryIds');
       }
       
       const business = await Business.findById(authorId);

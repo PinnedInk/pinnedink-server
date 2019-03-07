@@ -5,8 +5,8 @@ const Service = gql`
     id: ID! @unique
     author:IUserV
     name: String
-    categories: [String]
-    subcategories: [String]
+    categories: [Category]
+    subcategories: [Subcategory]
     duration: String
     cost: String
   }

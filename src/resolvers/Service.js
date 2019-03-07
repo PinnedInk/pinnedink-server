@@ -8,7 +8,7 @@ export default {
   //   },
   // },
   Mutation: {
-    addService: async(_, { name, categories, subcategories, duration, cost },  { business }) => {
+    addService: async(_, { name, categories, subcategories, duration, cost }, { business }) => {
       const service = await Service.create({
         name,
         categories,
@@ -16,14 +16,18 @@ export default {
         duration,
         cost
       });
-  
+
       if (categories) {
-        await createTag(categories, service, Category, 'categories');
+        await createTag(categories, service, Category, 'categoryname', 'categoryIds');
       }
-      if (categories) {
-        await createTag(categories, service, Subcategory, 'subcategories');
+      if (subcategories) {
+        await createTag(subcategories, service, Subcategory, 'subcategoryname', 'subcategoryIds');
       }
-      business.serviceIds.push(service.id);
+      if (business.serviceIds) {
+        business.serviceIds.push(service.id);
+      } else {
+        business.serviceIds = [service.id];
+      }
       await business.save();
       return service;
     },

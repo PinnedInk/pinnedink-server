@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt-nodejs';
 
 import Token from './Token';
+import Service from './Service';
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -22,6 +23,15 @@ class BusinessClass {
   get token() {
     const tokenId = this.tokenId;
     return Token.findById(tokenId);
+  }
+  
+  get services() {
+    const list = this.serviceIds;
+    return Service.find({
+      '_id': {
+        $in: list
+      }
+    });
   }
  
   static generateHash(password) {

@@ -16,7 +16,7 @@ const Branch = gql`
     author: IUserV
     authorId: ID
     branchName: String
-    categories: [String]
+    categories: [Category]
     country: String
     postcode: String
     branchPhone: String

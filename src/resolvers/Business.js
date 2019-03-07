@@ -15,6 +15,7 @@ const sendVerificationMail = async(email) => {
     key: tokenKey,
     date: new Date()
   }, { upsert: true, new: true });
+  
   const API_URL = 'https://zat932sfo2.execute-api.us-east-1.amazonaws.com/prod/sendVerificationEmail';
   return new Promise((resolve, reject) => request.post(
     API_URL,
@@ -127,7 +128,7 @@ export default {
         const sessionSecret = process.env.SESSION_SECRET;
         try {
           business = await Business.create({ email, password, companyName, name, phoneNumber });
-          // await sendVerificationMail(email);
+          await sendVerificationMail(email);
         } catch (e) {
           return new Error('Sending mail generated error');
         } finally {
