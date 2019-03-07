@@ -1,4 +1,4 @@
-import { Tag, Category, Branch } from '../models';
+import { Tag, Category, Branch, Service } from '../models';
 
 export const addingToIds = (obj, id, prop) => {
   if (obj[prop]) {
@@ -16,8 +16,8 @@ export const removeIds = async(obj, id, prop) => {
   await obj.save()
 };
 
-export const createTag = async (items, target, model, type, ids) => {
-  let elementsIsds = null;
+export const createTag = async (items, target, model, type, ids, targetModel) => {
+  let elementsIsds = [];
   if (!items || !target || !model) {
     return null;
   }
@@ -26,39 +26,17 @@ export const createTag = async (items, target, model, type, ids) => {
       updateOne : {
         filter: { [type]: item },
         update: { $inc: { rating: 1 } },
-        upsert: true
+        upsert: true,
+        new: true
       }
     }))));
-    elementsIsds = generateElements.upsertedIds;
-  }
- 
-  for (let prop in elementsIsds) {
-    if (target[ids]) {
-      target[ids].push(elementsIsds[prop]);
-    } else {
-      target[ids] = [elementsIsds[prop]];
+    for (let prop in generateElements.upsertedIds){
+      elementsIsds.push(generateElements.upsertedIds[prop]);
     }
   }
-  // await target.findOneAndUpdate({ '_id': target.id }, {categories: categories}, { new: true });
-  await target.save();
+  if(elementsIsds.length){
+    elementsIsds.map(async(elem)=>{
+      await targetModel.findOneAndUpdate({ '_id': target.id }, {[ids]: elem}, { new: true });
+    })
+  }
 };
-
-// export const createCategory = async (categories, target) => {
-//   if (!categories || !target) {
-//     return null;
-//   }
-//   if (categories.length){
-//     await Category.bulkWrite(categories.map(((category, i) => ({
-//       updateOne : {
-//         filter: { categoryname: category },
-//         update: { $inc: { rating: 1 } },
-//         upsert: true
-//       }
-//     }))));
-//   }
-//   if (target) {
-//     // await Branch.findOneAndUpdate({ '_id': target.id }, {categories: categories}, { new: true });
-//     target.categories = categories;
-//     await target.save();
-//   }
-// };

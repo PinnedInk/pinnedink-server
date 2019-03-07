@@ -18,10 +18,10 @@ export default {
       });
 
       if (categories) {
-        await createTag(categories, service, Category, 'categoryname', 'categoryIds');
+        await createTag(categories, service, Category, 'categoryname', 'categoryIds', Service);
       }
       if (subcategories) {
-        await createTag(subcategories, service, Subcategory, 'subcategoryname', 'subcategoryIds');
+        await createTag(subcategories, service, Subcategory, 'subcategoryname', 'subcategoryIds', Service);
       }
       if (business.serviceIds) {
         business.serviceIds.push(service.id);
