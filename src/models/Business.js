@@ -5,6 +5,7 @@ import Token from './Token';
 import Service from './Service';
 import Workdesk from './Workdesk';
 import Master from './Master';
+import Client from './Client';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -45,6 +46,15 @@ class BusinessClass {
       }
     });
   }
+  
+  get clients() {
+    const list = this.clientIds;
+    return Client.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
  
   static generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
@@ -61,7 +71,8 @@ const BusinessSchema = new Schema({
   avatarUrl: String,
   serviceIds: [ObjectId],
   workdeskIds: [ObjectId],
-  masterIds: [ObjectId]
+  masterIds: [ObjectId],
+  clientIds: [ObjectId]
 });
 
 BusinessSchema.loadClass(BusinessClass);

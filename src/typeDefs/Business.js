@@ -14,6 +14,7 @@ const Business = gql`
     services:[Service]
     workdesks:[Workdesk]
     masters:[Master]
+    clients: [Client]
   }
 
   extend type Query {

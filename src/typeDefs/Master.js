@@ -30,7 +30,7 @@ const Master = gql`
       phone: String,
       description: String,
       certificates: [String]
-    ): Workdesk
+    ): Master
   }
 `;
 

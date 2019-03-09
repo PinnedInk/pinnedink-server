@@ -14,6 +14,7 @@ const IUserV = gql`
     services:[Service]
     workdesks:[Workdesk]
     masters:[Master]
+    clients:[Client]
   }
 `;
 

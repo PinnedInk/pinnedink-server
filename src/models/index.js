@@ -17,5 +17,6 @@ import Subcategory from './Subcategory';
 import Service from './Service';
 import Workdesk from './Workdesk';
 import Master from './Master';
+import Client from './Client';
 
-export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service, Workdesk, Master }
+export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service, Workdesk, Master, Client }

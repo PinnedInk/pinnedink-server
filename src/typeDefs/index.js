@@ -24,5 +24,6 @@ import Service from './Service';
 import Workdesk from './Workdesk';
 import WorkingHours from './WorkingHours';
 import Master from './Master';
+import Client from './Client';
 
-export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, Branch, Category, Subcategory, Service, Workdesk, WorkingHours, Master];
+export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, Branch, Category, Subcategory, Service, Workdesk, WorkingHours, Master, Client];
