@@ -13,6 +13,7 @@ const Business = gql`
     avatarUrl: String
     services:[Service]
     workdesks:[Workdesk]
+    masters:[Master]
   }
 
   extend type Query {

@@ -18,7 +18,8 @@ import Category from './Category';
 import Subcategory from './Subcategory';
 import Service from './Service';
 import Workdesk from './Workdesk';
+import Master from './Master';
 
-const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service, Workdesk);
+const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service, Workdesk, Master);
 
 export default resolvers;

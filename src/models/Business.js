@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt-nodejs';
 import Token from './Token';
 import Service from './Service';
 import Workdesk from './Workdesk';
+import Master from './Master';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -35,15 +36,18 @@ class BusinessClass {
       }
     });
   }
+  
+  get masters() {
+    const list = this.masterIds;
+    return Master.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
  
   static generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-  }
-  
-  static getById(id) {
-    return this.findById({
-      _id: id
-    });
   }
 }
 
@@ -56,7 +60,8 @@ const BusinessSchema = new Schema({
   phoneNumber: String,
   avatarUrl: String,
   serviceIds: [ObjectId],
-  workdeskIds: [ObjectId]
+  workdeskIds: [ObjectId],
+  masterIds: [ObjectId]
 });
 
 BusinessSchema.loadClass(BusinessClass);

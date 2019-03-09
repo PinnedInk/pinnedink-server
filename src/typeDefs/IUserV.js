@@ -13,6 +13,7 @@ const IUserV = gql`
     avatarUrl: String
     services:[Service]
     workdesks:[Workdesk]
+    masters:[Master]
   }
 `;
 
