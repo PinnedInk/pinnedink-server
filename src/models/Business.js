@@ -3,17 +3,10 @@ import bcrypt from 'bcrypt-nodejs';
 
 import Token from './Token';
 import Service from './Service';
+import Workdesk from './Workdesk';
 
 const { Schema } = mongoose;
-const { ObjectId, Mixed } = Schema.Types;
-
-const EffectSchema = new Schema({
-  date: { type: Date, default: Date.now() },
-  type: {
-    type: String,
-    enum: ['Pro']
-  }
-});
+const { ObjectId } = Schema.Types;
 
 class BusinessClass {
   validPassword(password) {
@@ -28,6 +21,15 @@ class BusinessClass {
   get services() {
     const list = this.serviceIds;
     return Service.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
+  
+  get workdesks() {
+    const list = this.workdeskIds;
+    return Workdesk.find({
       '_id': {
         $in: list
       }
@@ -53,7 +55,8 @@ const BusinessSchema = new Schema({
   password: String,
   phoneNumber: String,
   avatarUrl: String,
-  serviceIds: [ObjectId]
+  serviceIds: [ObjectId],
+  workdeskIds: [ObjectId]
 });
 
 BusinessSchema.loadClass(BusinessClass);

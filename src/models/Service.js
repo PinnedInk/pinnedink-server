@@ -4,7 +4,7 @@ import Category from './Category';
 import Subcategory from './Subcategory';
 
 const { Schema } = mongoose;
-const { ObjectId, Mixed } = Schema.Types;
+const { ObjectId } = Schema.Types;
 
 class ServiceClass {
   get author() {
@@ -32,7 +32,7 @@ class ServiceClass {
 }
 
 const ServiceSchema = new Schema({
-  authorId:ObjectId,
+  authorId: ObjectId,
   name: String,
   categoryIds: [ObjectId],
   subcategoryIds: [ObjectId],

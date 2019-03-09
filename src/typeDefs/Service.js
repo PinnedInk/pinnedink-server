@@ -11,10 +11,6 @@ const Service = gql`
     cost: String
   }
 
-  #  extend type Query {
-  #    events: [Event]
-  #  }
-
   extend type Mutation {
     addService(name: String, categories: [String], subcategories: [String], duration: String, cost: String): Service
   }

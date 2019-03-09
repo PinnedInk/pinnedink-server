@@ -4,7 +4,7 @@ import Business from './Business';
 import Category from './Category';
 
 const { Schema } = mongoose;
-const { ObjectId, Mixed } = Schema.Types;
+const { ObjectId } = Schema.Types;
 
 class BranchClass {
   get location() {
@@ -35,7 +35,10 @@ const BranchSchema = new Schema({
   branchPhone: String,
   siteUrl: String,
   avatarUrl: String,
-  date: Mixed,
+  workHours: {
+    begin: Date,
+    end: Date
+  },
   locationId: ObjectId
 });
 

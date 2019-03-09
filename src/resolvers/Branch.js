@@ -1,21 +1,16 @@
 import { Branch, Business, Category } from '../models';
-import { createCategory, createTag } from '../utils';
+import { createTag } from '../utils';
 
 export default {
-  // Query: {
-  //   branches: async(_, { od, numm }) => {
-  //     return Event.find({});
-  //   },
-  // },
   Mutation: {
-    addBranch: async(_, { branchName, categories, country, postcode, siteUrl, avatarUrl, date, authorId, branchPhone }) => {
+    addBranch: async(_, { branchName, categories, country, postcode, siteUrl, avatarUrl, workHours, authorId, branchPhone }) => {
       const branch = await Branch.create({
         branchName,
         country,
         postcode,
         siteUrl,
         avatarUrl,
-        date,
+        workHours,
         authorId,
         branchPhone
       });
