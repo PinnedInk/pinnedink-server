@@ -14,7 +14,7 @@ class MasterClass {
   get service() {
     const list = this.serviceIds;
     return Service.find({
-      'id': {
+      '_id': {
         $in: list
       }
     });
