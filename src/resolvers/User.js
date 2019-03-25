@@ -4,7 +4,7 @@ import request from 'request';
 import { User, Token, Team, Message, Like, Comment, Event, Job, Work, Dialogue, Tag } from '../models';
 import { google } from 'googleapis';
 import { FB } from 'fb';
-import { removeIds, createTag } from '../utils';
+import { removeIds, addElemsToModel } from '../utils';
 import moment from 'moment';
 
 const sendVerificationMail = async(email) => {
@@ -294,7 +294,7 @@ export default {
     //     avatarUrl = `avatar/${avatarUrl}`;
     //   }
     //   if (tags) {
-    //     await createTag(tags, user);
+    //     await addElemsToModel(tags, user);
     //   }
     //   const payload = _.pickBy({
     //     name,

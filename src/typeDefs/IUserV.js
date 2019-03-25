@@ -11,10 +11,7 @@ const IUserV = gql`
     phoneNumber: String
     thumbUrl: String
     avatarUrl: String
-    services:[Service]
-    workdesks:[Workdesk]
-    masters:[Master]
-    clients:[Client]
+    branches:[Branch]
   }
 `;
 

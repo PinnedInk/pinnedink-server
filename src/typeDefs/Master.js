@@ -29,7 +29,8 @@ const Master = gql`
       workHours: WorkingHoursInput,
       phone: String,
       description: String,
-      certificates: [String]
+      certificates: [String],
+      branchId: ID
     ): Master
   }
 `;

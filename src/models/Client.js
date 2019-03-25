@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Business from './Business';
+import { Business } from '../models';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;

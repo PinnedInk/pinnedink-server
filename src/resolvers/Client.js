@@ -1,4 +1,4 @@
-import { Client } from '../models';
+import { Client, Branch } from '../models';
 
 export default {
   Mutation: {
@@ -11,8 +11,10 @@ export default {
       avatarUrl,
       birthDate,
       sex,
-      type
+      type,
+      branchId
     }, { business }) => {
+      const branch = await Branch.findById(branchId);
       const client = await Client.create({
         ownerId: business.id,
         phone,
@@ -25,12 +27,12 @@ export default {
         sex,
         type
       });
-      if (business.clientIds) {
-        business.clientIds.push(client.id);
+      if (branch.clientIds) {
+        branch.clientIds.push(client.id);
       } else {
-        business.clientIds = [client.id];
+        branch.clientIds = [client.id];
       }
-      await business.save();
+      await branch.save();
       return client;
     },
   }

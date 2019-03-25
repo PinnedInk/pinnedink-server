@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt-nodejs';
-
-import Token from './Token';
-import Service from './Service';
-import Workdesk from './Workdesk';
-import Master from './Master';
-import Client from './Client';
+import { Token, Client, Branch } from '../models';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -20,41 +15,16 @@ class BusinessClass {
     return Token.findById(tokenId);
   }
   
-  get services() {
-    const list = this.serviceIds;
-    return Service.find({
+  get branches() {
+    const list = this.branchIds;
+    return Branch.find({
       '_id': {
         $in: list
       }
     });
   }
   
-  get workdesks() {
-    const list = this.workdeskIds;
-    return Workdesk.find({
-      '_id': {
-        $in: list
-      }
-    });
-  }
-  
-  get masters() {
-    const list = this.masterIds;
-    return Master.find({
-      '_id': {
-        $in: list
-      }
-    });
-  }
-  
-  get clients() {
-    const list = this.clientIds;
-    return Client.find({
-      '_id': {
-        $in: list
-      }
-    });
-  }
+
  
   static generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
@@ -69,10 +39,7 @@ const BusinessSchema = new Schema({
   password: String,
   phoneNumber: String,
   avatarUrl: String,
-  serviceIds: [ObjectId],
-  workdeskIds: [ObjectId],
-  masterIds: [ObjectId],
-  clientIds: [ObjectId]
+  branchIds:[ObjectId]
 });
 
 BusinessSchema.loadClass(BusinessClass);

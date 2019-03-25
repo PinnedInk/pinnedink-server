@@ -1,10 +1,12 @@
-import { Service, Category, Subcategory } from '../models';
-import { createTag } from '../utils';
+import { Service, Category, Subcategory, Branch } from '../models';
+import { addElemsToModel } from '../utils';
 
 export default {
   Mutation: {
-    addService: async(_, { name, categories, subcategories, duration, cost }, { business }) => {
+    addService: async(_, { name, categories, subcategories, duration, cost, branchId }, { business }) => {
+      const branch = await Branch.findById(branchId);
       const service = await Service.create({
+        authorId: business.id,
         name,
         categories,
         subcategories,
@@ -13,17 +15,18 @@ export default {
       });
 
       if (categories) {
-        await createTag(categories, service, Category, 'categoryname', 'categoryIds', Service);
+        await addElemsToModel(categories, service, Category, 'categoryname', 'categoryIds', Service);
       }
       if (subcategories) {
-        await createTag(subcategories, service, Subcategory, 'subcategoryname', 'subcategoryIds', Service);
+        await addElemsToModel(subcategories, service, Subcategory, 'subcategoryname', 'subcategoryIds', Service);
       }
-      if (business.serviceIds) {
-        business.serviceIds.push(service.id);
+      
+      if (branch.serviceIds) {
+        branch.serviceIds.push(service.id);
       } else {
-        business.serviceIds = [service.id];
+        branch.serviceIds = [service.id];
       }
-      await business.save();
+      await branch.save();
       return service;
     },
   }

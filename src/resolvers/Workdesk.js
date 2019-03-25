@@ -1,4 +1,4 @@
-import { Workdesk } from '../models';
+import { Workdesk, Branch } from '../models';
 
 export default {
   Query: {
@@ -7,16 +7,17 @@ export default {
     }
   },
   Mutation: {
-    addWorkdesk: async(_, { title, avatarUrl, description, service, workHours, rental }, { business }) => {
+    addWorkdesk: async(_, { title, avatarUrl, description, service, workHours, rental, branchId }, { business }) => {
+      const branch = await Branch.findById(branchId);
       const workdesk = await Workdesk.create({
         authorId: business.id, title, avatarUrl, description, serviceId: service, workHours, rental
       });
-      if (business.workdeskIds) {
-        business.workdeskIds.push(workdesk.id);
+      if (branch.workdeskIds) {
+        branch.workdeskIds.push(workdesk.id);
       } else {
-        business.workdeskIds = [workdesk.id];
+        branch.workdeskIds = [workdesk.id];
       }
-      await business.save();
+      await branch.save();
       return workdesk;
     },
   }

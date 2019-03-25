@@ -1,9 +1,10 @@
 import { Branch, Business, Category } from '../models';
-import { createTag } from '../utils';
+import { addElemsToModel } from '../utils';
 
 export default {
   Mutation: {
     addBranch: async(_, { branchName, categories, country, postcode, siteUrl, avatarUrl, workHours, authorId, branchPhone }) => {
+      console.log("user", user);
       const branch = await Branch.create({
         branchName,
         country,
@@ -15,7 +16,7 @@ export default {
         branchPhone
       });
       if (categories) {
-        await createTag(categories, branch, Category, 'categoryname', 'categoryIds', Branch);
+        await addElemsToModel(categories, branch, Category, 'categoryname', 'categoryIds', Branch);
       }
       
       const business = await Business.findById(authorId);

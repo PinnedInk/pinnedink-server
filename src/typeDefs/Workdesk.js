@@ -16,7 +16,7 @@ const Workdesk = gql`
     workdesks(authorId: ID): [Workdesk]
   }
   extend type Mutation {
-    addWorkdesk(title: String, avatarUrl: String, description: String, service: ID!, workHours: WorkingHoursInput, rental: String): Workdesk
+    addWorkdesk(title: String, avatarUrl: String, description: String, service: ID!, workHours: WorkingHoursInput, rental: String, branchId: ID): Workdesk
   }
 `;
 

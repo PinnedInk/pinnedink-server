@@ -1,4 +1,4 @@
-import { Master } from '../models';
+import { Master, Branch } from '../models';
 
 export default {
   Mutation: {
@@ -12,8 +12,10 @@ export default {
       workHours,
       phone,
       description,
-      certificates
+      certificates,
+      branchId
     }, { business }) => {
+      const branch = await Branch.findById(branchId);
       const master = await Master.create({
         ownerId: business.id,
         email,
@@ -27,12 +29,12 @@ export default {
         description,
         certificates
       });
-      if (business.masterIds) {
-        business.masterIds.push(master.id);
+      if (branch.masterIds) {
+        branch.masterIds.push(master.id);
       } else {
-        business.masterIds = [master.id];
+        branch.masterIds = [master.id];
       }
-      await business.save();
+      await branch.save();
       return master;
     },
   }

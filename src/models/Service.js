@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
-import Business from './Business';
-import Category from './Category';
-import Subcategory from './Subcategory';
+import { Category, Subcategory, Business } from '../models';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;

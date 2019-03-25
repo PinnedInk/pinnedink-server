@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
-import Location from './Location';
-import Business from './Business';
-import Category from './Category';
+import { Service, Category, Business, Location, Workdesk, Master, Client } from '../models';
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -20,16 +18,51 @@ class BranchClass {
     });
   }
   
+  get services() {
+    const list = this.serviceIds;
+    return Service.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
+  
   get author() {
     const authorId = this.authorId;
     return Business.findById(authorId);
+  }
+  
+  get workdesks() {
+    const list = this.workdeskIds;
+    return Workdesk.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
+  
+  get masters() {
+    const list = this.masterIds;
+    return Master.find({
+      '_id': {
+        $in: list
+      }
+    });
+  }
+  
+  get clients() {
+    const list = this.clientIds;
+    return Client.find({
+      '_id': {
+        $in: list
+      }
+    });
   }
 }
 
 const BranchSchema = new Schema({
   authorId: ObjectId,
   branchName: String,
-  categoryIds: [ObjectId],
   country: String,
   postcode: String,
   branchPhone: String,
@@ -39,7 +72,12 @@ const BranchSchema = new Schema({
     begin: Date,
     end: Date
   },
-  locationId: ObjectId
+  categoryIds: [ObjectId],
+  locationId: ObjectId,
+  serviceIds: [ObjectId],
+  workdeskIds: [ObjectId],
+  masterIds: [ObjectId],
+  clientIds: [ObjectId]
 });
 
 BranchSchema.loadClass(BranchClass);

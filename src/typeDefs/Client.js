@@ -26,7 +26,8 @@ const Client = gql`
       avatarUrl: String,
       birthDate: Date,
       sex: String,
-      type: String
+      type: String,
+      branchId: ID
     ): Client
   }
 `;

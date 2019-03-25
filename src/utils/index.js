@@ -16,7 +16,7 @@ export const removeIds = async(obj, id, prop) => {
   await obj.save()
 };
 
-export const createTag = async (items, target, model, type, ids, targetModel) => {
+export const addElemsToModel = async (items, target, model, type, ids, targetModel) => {
   let elementsIsds = [];
   if (!items || !target || !model) {
     return null;

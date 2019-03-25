@@ -1,5 +1,5 @@
 import { Team, Message, User, Dialogue } from '../models';
-import { createTag } from '../utils';
+import { addElemsToModel } from '../utils';
 
 const sendInvites = async(inkname, members, text) => {
   const team = await Team.findOne({ inkname });
@@ -65,7 +65,7 @@ export default {
         await sendInvites(inkname, members, text);
       }
       if (tags) {
-        await createTag(tags, team);
+        await addElemsToModel(tags, team);
       }
       user.teamId = team.id;
       await user.save();
