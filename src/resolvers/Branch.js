@@ -4,7 +4,6 @@ import { addElemsToModel } from '../utils';
 export default {
   Mutation: {
     addBranch: async(_, { branchName, categories, country, postcode, siteUrl, avatarUrl, workHours, authorId, branchPhone }) => {
-      console.log("user", user);
       const branch = await Branch.create({
         branchName,
         country,
