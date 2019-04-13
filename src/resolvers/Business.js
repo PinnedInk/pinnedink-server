@@ -102,7 +102,7 @@ export default {
       }
       return new Error('Wrong email or password');
     },
-    logout: async(_, data, { token, user }) => {
+    logout: async(_, data, { token, business }) => {
       if (token) {
         await Token.findOneAndRemove({ key: token.key });
         token = null;
@@ -110,9 +110,9 @@ export default {
         return new Error('Token missing');
       }
       
-      if (user) {
-        user.tokenId = null;
-        user.save();
+      if (business) {
+        business.tokenId = null;
+        business.save();
         return null;
       } else {
         return new Error('User missing');
