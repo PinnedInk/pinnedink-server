@@ -27,26 +27,26 @@ const User = gql`
     location: Location
   }
   
-  extend type Query {
-    user(inkname: String, email: String): IUser
-    users: [User]
-    currentUser: User
-    filteredUsers(value: String): [User]
-    verify(provider: String!, code: String!): User
-  }
-  
-  extend type Mutation {
-    follow(inkname: String): User
-    logout: User
-    login(email: String!, password: String!): User
-    createUser(email: String!, password: String!): User
-    removeUser(id: ID!): User
-    updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl: String, email: String, password: String, thumbUrl: String, tags: [String]): User
-    validateUserName(inkname:String): User
-    applyInvite(inkname: String, messageId: ID!): User
-    sendVerifyEmail(email:String!): Boolean
-  }
- 
+#  extend type Query {
+#    user(inkname: String, email: String): IUser
+#    users: [User]
+#    currentUser: User
+#    filteredUsers(value: String): [User]
+#    verify(provider: String!, code: String!): User
+#  }
+#
+#  extend type Mutation {
+#    follow(inkname: String): User
+#    logout: User
+#    login(email: String!, password: String!): User
+#    createUser(email: String!, password: String!): User
+#    removeUser(id: ID!): User
+#    updateUser(name: String, inkname:String, description: DesriptionInput, avatarUrl: String, email: String, password: String, thumbUrl: String, tags: [String]): User
+#    validateUserName(inkname:String): User
+#    applyInvite(inkname: String, messageId: ID!): User
+#    sendVerifyEmail(email:String!): Boolean
+#  }
+#
    extend type Subscription {
      userUpdated(dialogueId: ID!): User
    }

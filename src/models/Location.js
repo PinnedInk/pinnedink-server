@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import User from './User';
-import Team from './Team';
-import Work from './Work';
-import Event from './Event';
+import { Event, Work, Team, User } from '../models';
+
 
 const { Schema } = mongoose;
 const { ObjectId, Mixed } = Schema.Types;
@@ -43,7 +41,7 @@ const LocationSchema = new Schema({
   },
   category: {
     type: String,
-    enum: ['User', 'Team', 'Event', 'Work']
+    enum: ['User', 'Team', 'Event', 'Work', 'Business']
   },
   name: String
 });

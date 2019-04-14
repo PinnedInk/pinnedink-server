@@ -1,6 +1,7 @@
 import IUser from './IUser';
 import ISender from './ISender';
 import IResponsable from './IResponsable';
+import IUserV from './IUserV';
 import Description from './Description';
 import Message from './Message';
 import Comment from './Comment';
@@ -15,5 +16,14 @@ import Team from './Team';
 import Token from './Token';
 import User from './User';
 import Work from './Work';
+import Business from './Business';
+import Branch from './Branch';
+import Category from './Category';
+import Subcategory from './Subcategory';
+import Service from './Service';
+import Workdesk from './Workdesk';
+import WorkingHours from './WorkingHours';
+import Master from './Master';
+import Client from './Client';
 
-export default [IUser, ISender, IResponsable, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work];
+export default [IUser, ISender, IResponsable, IUserV, Description, Comment, Message, Dialogue, Effect, Event, Job, Like, Location, Tag, Team, Token, User, Work, Business, Branch, Category, Subcategory, Service, Workdesk, WorkingHours, Master, Client];

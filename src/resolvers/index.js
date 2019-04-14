@@ -12,7 +12,15 @@ import Message from './Message';
 import Tag from './Tag';
 import Dialogue from './Dialogue';
 import Location from './Location';
+import Business from './Business';
+import Branch from './Branch';
+import Category from './Category';
+import Subcategory from './Subcategory';
+import Service from './Service';
+import Workdesk from './Workdesk';
+import Master from './Master';
+import Client from './Client';
 
-const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location);
+const resolvers = _.merge(Comment, Like, Types, User, Work, Job, Event, Team, Message, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service, Workdesk, Master, Client);
 
 export default resolvers;

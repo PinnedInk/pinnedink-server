@@ -1,5 +1,5 @@
 import { Work, User, Team } from '../models';
-import { removeIds, createTag } from '../utils';
+import { removeIds, addElemsToModel } from '../utils';
 
 export default {
   Query: {
@@ -46,7 +46,7 @@ export default {
         date: Date.now()
       });
       if (tags && tags.length) {
-        await createTag(tags, work);
+        await addElemsToModel(tags, work);
       }
       user.worksIds.push(work.id);
       await user.save();
@@ -58,7 +58,7 @@ export default {
         name
       }, { new: true });
       if (tags) {
-        await createTag(tags, work);
+        await addElemsToModel(tags, work);
       }
       return work;
     },

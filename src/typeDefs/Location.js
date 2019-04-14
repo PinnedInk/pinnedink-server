@@ -14,6 +14,7 @@ const Location = gql`
     Team
     Work
     Event
+    Business
   }
   input GeoJsonInput {
     type: LocationType

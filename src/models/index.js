@@ -10,5 +10,13 @@ import Event from './Event';
 import Tag from './Tag';
 import Dialogue from './Dialogue';
 import Location from './Location';
+import Business from './Business';
+import Branch from './Branch';
+import Category from './Category';
+import Subcategory from './Subcategory';
+import Service from './Service';
+import Workdesk from './Workdesk';
+import Master from './Master';
+import Client from './Client';
 
-export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location }
+export { Comment, Like, User, Work, Token, Team, Message, Job, Event, Tag, Dialogue, Location, Business, Branch, Category, Subcategory, Service, Workdesk, Master, Client }

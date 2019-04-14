@@ -4,16 +4,16 @@ import resolvers from '../resolvers';
 import typeDefs from '../typeDefs';
 
 const baseSchema = gql`
-    scalar Date
-    type Query {
-        domain: String
-    }
-    type Mutation {
-        domain: String
-    }
-    type Subscription {
-        domain: String
-    }
+  scalar Date
+  type Query {
+    domain: String
+  }
+  type Mutation {
+    domain: String
+  }
+  type Subscription {
+    domain: String
+  }
 `;
 
 const schema = [baseSchema, ...typeDefs];

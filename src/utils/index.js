@@ -1,4 +1,4 @@
-import { Tag } from '../models';
+import { Tag, Category, Branch, Service } from '../models';
 
 export const addingToIds = (obj, id, prop) => {
   if (obj[prop]) {
@@ -16,22 +16,27 @@ export const removeIds = async(obj, id, prop) => {
   await obj.save()
 };
 
-export const createTag = async (tags, target) => {
-  if (!tags || !target) {
+export const addElemsToModel = async (items, target, model, type, ids, targetModel) => {
+  let elementsIsds = [];
+  if (!items || !target || !model) {
     return null;
   }
-  if (tags.length){
-    await Tag.bulkWrite(tags.map(((tag, i) => ({
+  if (items.length){
+    const generateElements = await model.bulkWrite(items.map(((item, i) => ({
       updateOne : {
-        filter: { tagname: tag },
+        filter: { [type]: item },
         update: { $inc: { rating: 1 } },
-        upsert: true
+        upsert: true,
+        new: true
       }
     }))));
+    for (let prop in generateElements.upsertedIds){
+      elementsIsds.push(generateElements.upsertedIds[prop]);
+    }
   }
-  
-  if (target) {
-    target.tags = tags;
-    await target.save();
+  if(elementsIsds.length){
+    elementsIsds.map(async(elem)=>{
+      await targetModel.findOneAndUpdate({ '_id': target.id }, {[ids]: elem}, { new: true });
+    })
   }
 };
